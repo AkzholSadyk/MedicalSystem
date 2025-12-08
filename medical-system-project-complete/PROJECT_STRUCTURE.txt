@@ -1,0 +1,46 @@
+.
+├── ARCHITECTURE.md
+├── DATABASE_SCHEMA.md
+├── DEPLOYMENT_GUIDE.md
+├── PROJECT_ANALYSIS.md
+├── PROJECT_STRUCTURE.txt
+├── README.md
+├── TESTING_GUIDE.md
+├── backend
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── config.py
+│   ├── database.py
+│   ├── dependencies.py
+│   ├── main.py
+│   ├── medical.db
+│   ├── models.py
+│   ├── requirements.txt
+│   ├── routers
+│   │   ├── __init__.py
+│   │   ├── ai_chat_router.py
+│   │   ├── appointments_router.py
+│   │   ├── auth_router.py
+│   │   ├── dashboard_router.py
+│   │   ├── doctors_router.py
+│   │   ├── medical_records_router.py
+│   │   └── patients_router.py
+│   ├── schemas.py
+│   ├── seed_data.py
+│   ├── server.log
+│   ├── services
+│   │   ├── __init__.py
+│   │   └── ai_service.py
+│   └── utils
+│       ├── __init__.py
+│       └── security.py
+├── docker-compose.yml
+└── frontend
+    ├── README.md
+    ├── package.json
+    └── src
+        ├── app
+        ├── assets
+        └── environments
+
+9 directories, 34 files

@@ -1,0 +1,28 @@
+# Medical System Backend Requirements
+# Compatible with Python 3.14
+
+# FastAPI and server
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+
+# Database
+sqlalchemy>=2.0.36
+
+# Data validation (latest versions support Python 3.14)
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+
+# Authentication
+python-jose[cryptography]>=3.3.0
+passlib>=1.7.4
+bcrypt>=4.2.1
+python-multipart>=0.0.20
+
+# AI Integration
+openai>=1.58.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# Email validation
+email-validator>=2.2.0

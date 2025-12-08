@@ -1,0 +1,26 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Username</mat-label>
+    <input matInput formControlName="username" required>
+    <mat-error *ngIf="loginForm.get('username')?.hasError('required')">Username is required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Password</mat-label>
+    <input matInput formControlName="password" type="password" required>
+    <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
+  </mat-form-field>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || loading" class="full-width">
+    <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+    Login
+  </button>
+
+  <mat-divider></mat-divider>
+
+  <button mat-button color="accent" routerLink="/auth/register" class="full-width">
+    Don't have an account? Register
+  </button>
+</form>

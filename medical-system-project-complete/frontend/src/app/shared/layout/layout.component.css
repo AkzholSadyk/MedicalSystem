@@ -1,0 +1,20 @@
+.layout-container {
+  height: 100vh;
+}
+
+.layout-sidenav {
+  width: 250px;
+  padding: 0;
+}
+
+.layout-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.layout-main-content {
+  padding: 20px;
+  flex-grow: 1;
+  background-color: #f5f5f5;
+}

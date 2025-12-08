@@ -1,0 +1,44 @@
+<div class="doctors-container">
+  <h2>Find a Doctor</h2>
+
+  <mat-card class="filter-card">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Search by Name, Specialization, or Clinic</mat-label>
+      <input matInput [(ngModel)]="filterText" placeholder="e.g., Cardiology, Dr. Smith">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </mat-card>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <!-- <mat-spinner></mat-spinner> -->
+    <p>Loading doctors...</p>
+  </div>
+
+  <div *ngIf="!loading && filteredDoctors.length > 0" class="doctor-list">
+    <mat-card *ngFor="let doctor of filteredDoctors" class="doctor-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>person</mat-icon>
+        <mat-card-title>{{ doctor.full_name }}</mat-card-title>
+        <mat-card-subtitle>{{ doctor.specialization }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Clinic:</strong> {{ doctor.clinic_name }}</p>
+        <p><strong>Department:</strong> {{ doctor.department_name }}</p>
+        <p><strong>Phone:</strong> {{ doctor.phone_number }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" routerLink="/patient/appointments">
+          <mat-icon>event</mat-icon> Book Appointment
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && filteredDoctors.length === 0" class="no-results">
+    <mat-card>
+      <mat-card-content>
+        <p>No doctors found matching your search criteria.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

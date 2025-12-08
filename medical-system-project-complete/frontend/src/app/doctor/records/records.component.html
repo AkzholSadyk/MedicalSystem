@@ -1,0 +1,76 @@
+<div class="records-container">
+  <h2>Medical Records Management</h2>
+
+  <mat-card class="patient-select-card">
+    <mat-card-title>Select Patient</mat-card-title>
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Patient</mat-label>
+        <mat-select (selectionChange)="onPatientSelect($event.value)" [disabled]="loadingPatients">
+          <mat-option *ngFor="let patient of patients" [value]="patient.id">
+            {{ patient.full_name }} ({{ patient.date_of_birth | date:'shortDate' }})
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="!selectedPatient">Please select a patient</mat-error>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="selectedPatient">
+    <mat-card class="create-record-card">
+      <mat-card-title>Create New Record for {{ selectedPatient.full_name }}</mat-card-title>
+      <mat-card-content>
+        <form [formGroup]="recordForm" (ngSubmit)="createRecord()" class="record-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Diagnosis</mat-label>
+            <textarea matInput formControlName="diagnosis" required rows="3"></textarea>
+            <mat-error *ngIf="recordForm.get('diagnosis')?.hasError('required')">Diagnosis is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Treatment</mat-label>
+            <textarea matInput formControlName="treatment" required rows="3"></textarea>
+            <mat-error *ngIf="recordForm.get('treatment')?.hasError('required')">Treatment is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notes</mat-label>
+            <textarea matInput formControlName="notes" rows="3"></textarea>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="recordForm.invalid">
+            Create Medical Record
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="history-card">
+      <mat-card-title>Record History for {{ selectedPatient.full_name }}</mat-card-title>
+      <mat-card-content>
+        <div *ngIf="loadingRecords">
+          <mat-spinner></mat-spinner>
+          <p>Loading records...</p>
+        </div>
+        <div *ngIf="!loadingRecords && patientRecords.length === 0">
+          <p>No previous medical records found for this patient.</p>
+        </div>
+        <mat-accordion *ngIf="!loadingRecords && patientRecords.length > 0">
+          <mat-expansion-panel *ngFor="let record of patientRecords">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{ record.diagnosis | slice:0:50 }}...
+              </mat-panel-title>
+              <mat-panel-description>
+                {{ record.created_at | date:'mediumDate' }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <p><strong>Diagnosis:</strong> {{ record.diagnosis }}</p>
+            <p><strong>Treatment:</strong> {{ record.treatment }}</p>
+            <p><strong>Notes:</strong> {{ record.notes }}</p>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

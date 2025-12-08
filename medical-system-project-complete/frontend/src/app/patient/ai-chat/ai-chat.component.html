@@ -1,0 +1,61 @@
+<div class="chat-container">
+  <h2>AI Medical Assistant</h2>
+
+  <mat-card class="chat-card">
+    <div class="chat-sidebar">
+      <button mat-raised-button color="primary" class="full-width" (click)="startNewChat()">
+        <mat-icon>add</mat-icon> New Chat
+      </button>
+      <mat-divider></mat-divider>
+      <mat-nav-list *ngIf="!loadingSessions">
+        <h3 mat-subheader>Past Sessions</h3>
+        <a mat-list-item *ngFor="let session of sessions" (click)="selectSession(session)" [class.active-session]="session.id === currentSession?.id">
+          <mat-icon matListItemIcon>chat</mat-icon>
+          <span matListItemTitle>{{ session.title | slice:0:25 }}...</span>
+        </a>
+      </mat-nav-list>
+      <div *ngIf="loadingSessions" class="loading-sessions">
+        <!-- <mat-spinner [diameter]="20"></mat-spinner> -->
+        <p>Loading sessions...</p>
+      </div>
+    </div>
+
+    <div class="chat-main">
+      <div class="chat-header">
+        <h3>{{ currentSession ? currentSession.title : 'New Conversation' }}</h3>
+      </div>
+
+      <div class="chat-messages">
+        <div *ngIf="!currentSession" class="welcome-message">
+          <mat-icon>smart_toy</mat-icon>
+          <p>Start a new conversation with your AI Medical Assistant.</p>
+        </div>
+
+        <div *ngFor="let message of currentSession?.messages" class="message-bubble" [class.user-message]="message.role === 'user'" [class.ai-message]="message.role === 'ai'">
+          <mat-card>
+            <mat-card-content>
+              <p>{{ message.content }}</p>
+              <span class="timestamp">{{ message.timestamp | date:'shortTime' }}</span>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div *ngIf="loadingChat" class="loading-message">
+          <!-- <mat-spinner [diameter]="20"></mat-spinner> -->
+          <p>AI is typing...</p>
+        </div>
+      </div>
+
+      <div class="chat-input">
+        <form [formGroup]="chatForm" (ngSubmit)="sendMessage()">
+          <mat-form-field appearance="outline" class="full-width">
+            <input matInput formControlName="message" placeholder="Ask your medical question..." required>
+            <button mat-icon-button matSuffix color="primary" type="submit" [disabled]="chatForm.invalid || loadingChat">
+              <mat-icon>send</mat-icon>
+            </button>
+          </mat-form-field>
+        </form>
+      </div>
+    </div>
+  </mat-card>
+</div>
