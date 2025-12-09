@@ -9,6 +9,9 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { CoreModule } from './core.module';
 import { SharedModule } from './shared.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 
 @NgModule({
@@ -21,7 +24,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CoreModule,
     HttpClientModule,
     MatProgressSpinnerModule,
-    SharedModule
+    SharedModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      },
+      defaultLanguage: (typeof localStorage !== 'undefined' && localStorage.getItem('lang')) || 'en'
+    })
   ],
   providers: [
     provideAnimationsAsync(),
@@ -30,3 +41,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+// Custom HttpLoaderFactory
+export function HttpLoaderFactory(http: HttpClient): TranslateLoader {
+  return {
+    getTranslation: (lang: string): Observable<any> => {
+      return http.get(`/assets/i18n/${lang}.json`);
+    }
+  } as TranslateLoader;
+}

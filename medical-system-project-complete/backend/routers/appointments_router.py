@@ -1,17 +1,16 @@
-from datetime import date
+from datetime import date, datetime
 from typing import List, Optional
-
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
 
 from database import get_db
 from dependencies import get_current_user
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from models import Appointment, Doctor, Patient, User
-from schemas import (  
+from schemas import (
     AppointmentCreate,
-    AppointmentRead, 
+    AppointmentRead,
     AppointmentUpdate,
 )
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -105,6 +104,55 @@ async def get_upcoming_appointments(
     return appointments
 
 
+@router.post(
+    "/patient", response_model=AppointmentRead, status_code=status.HTTP_201_CREATED
+)
+async def create_appointment_patient(
+    appointment_data: AppointmentCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Alias for creating appointment by patient (keeps same logic as create_appointment)
+    """
+    return await create_appointment(appointment_data, current_user, db)
+
+
+@router.get("/patient", response_model=List[AppointmentRead])
+async def get_patient_appointments(
+    skip: int = 0,
+    limit: int = 100,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Get appointments for the current patient user.
+    This explicit route prevents the string "patient" from being interpreted
+    as the `{appointment_id}` path parameter which expects an int.
+    """
+    if current_user.role != "patient":
+        # Non-patient users should not use this endpoint; return empty list
+        # or you could raise HTTPException(status.HTTP_403_FORBIDDEN)
+        return []
+
+    patient = db.query(Patient).filter(Patient.user_id == current_user.id).first()
+    if not patient:
+        return []
+
+    appointments = (
+        db.query(Appointment)
+        .filter(Appointment.patient_id == patient.id)
+        .order_by(
+            Appointment.appointment_date.desc(), Appointment.appointment_time.desc()
+        )
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+    return appointments
+
+
 @router.get("/{appointment_id}", response_model=AppointmentRead)
 async def get_appointment(
     appointment_id: int,
@@ -154,6 +202,18 @@ async def create_appointment(
             status_code=status.HTTP_404_NOT_FOUND, detail="Doctor not found"
         )
 
+    # Normalize appointment_data: allow client to send a datetime for appointment_date
+    # and possibly omit appointment_time or patient_id when the authenticated user is a patient.
+    data = appointment_data.model_dump()
+
+    # If appointment_date is a datetime, extract date and time
+    appt_dt = data.get("appointment_date")
+    if isinstance(appt_dt, datetime):
+        # convert to date and set appointment_time if missing
+        data["appointment_date"] = appt_dt.date()
+        if not data.get("appointment_time"):
+            data["appointment_time"] = appt_dt.strftime("%H:%M")
+
     # If patient is creating, use their ID
     if current_user.role == "patient":
         patient = db.query(Patient).filter(Patient.user_id == current_user.id).first()
@@ -162,24 +222,27 @@ async def create_appointment(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Patient profile not found",
             )
-        appointment_data.patient_id = patient.id
+        data["patient_id"] = patient.id
     else:
-        # Verify patient exists
-        patient = (
-            db.query(Patient).filter(Patient.id == appointment_data.patient_id).first()
-        )
-        if not patient:
+        # Verify patient exists when provided by non-patient
+        patient = None
+        if data.get("patient_id") is not None:
+            patient = (
+                db.query(Patient).filter(Patient.id == data.get("patient_id")).first()
+            )
+        if data.get("patient_id") is None or not patient:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found"
             )
+    # (patient existence already validated above)
 
     # Check for conflicting appointments
     existing = (
         db.query(Appointment)
         .filter(
-            Appointment.doctor_id == appointment_data.doctor_id,
-            Appointment.appointment_date == appointment_data.appointment_date,
-            Appointment.appointment_time == appointment_data.appointment_time,
+            Appointment.doctor_id == data.get("doctor_id"),
+            Appointment.appointment_date == data.get("appointment_date"),
+            Appointment.appointment_time == data.get("appointment_time"),
             Appointment.status == "scheduled",
         )
         .first()
@@ -191,7 +254,7 @@ async def create_appointment(
             detail="This time slot is already booked",
         )
 
-    new_appointment = Appointment(**appointment_data.model_dump())
+    new_appointment = Appointment(**data)
 
     db.add(new_appointment)
     db.commit()

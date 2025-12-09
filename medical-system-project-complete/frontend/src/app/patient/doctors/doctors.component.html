@@ -18,7 +18,7 @@
     <mat-card *ngFor="let doctor of filteredDoctors" class="doctor-card">
       <mat-card-header>
         <mat-icon mat-card-avatar>person</mat-icon>
-        <mat-card-title>{{ doctor.full_name }}</mat-card-title>
+        <mat-card-title>{{ doctor.first_name }} {{ doctor.last_name }}</mat-card-title>
         <mat-card-subtitle>{{ doctor.specialization }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>

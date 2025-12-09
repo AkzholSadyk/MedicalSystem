@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from typing import List
 
@@ -15,7 +16,6 @@ from schemas import (
     AIChatSessionWithMessagesRead,
 )
 from services.ai_service import ai_service
-import uuid
 
 router = APIRouter()
 

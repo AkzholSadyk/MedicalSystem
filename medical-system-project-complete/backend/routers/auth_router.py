@@ -76,6 +76,10 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
             user_id=new_user.id,
             first_name=user_data.first_name,
             last_name=user_data.last_name,
+            patronymic=getattr(user_data, "patronymic", None),
+            phone=getattr(user_data, "phone", None),
+            date_of_birth=getattr(user_data, "date_of_birth", None),
+            city=getattr(user_data, "city", None),
         )
         db.add(patient)
         db.commit()
@@ -84,6 +88,9 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
             user_id=new_user.id,
             first_name=user_data.first_name,
             last_name=user_data.last_name,
+            patronymic=getattr(user_data, "patronymic", None),
+            phone=getattr(user_data, "phone", None),
+            city=getattr(user_data, "city", None),
         )
         db.add(doctor)
         db.commit()

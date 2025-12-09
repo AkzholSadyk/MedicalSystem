@@ -1,0 +1,81 @@
+<h2 mat-dialog-title>Profile</h2>
+<div mat-dialog-content>
+  <div *ngIf="!editing">
+    <p><strong>{{ data?.first_name }} {{ data?.last_name }}</strong></p>
+    <p>{{ data?.patronymic }}</p>
+    <p>{{ data?.gender }}</p>
+    <p>{{ data?.phone }}</p>
+    <p>{{ data?.date_of_birth }}</p>
+    <p>{{ data?.city }}</p>
+    <div *ngIf="isDoctor">
+      <p><strong>Clinic:</strong> {{ data?.clinic_name || data?.doctor?.clinic_name }}</p>
+      <p><strong>Specialization:</strong> {{ data?.specialization || data?.doctor?.specialization }}</p>
+      <p><strong>Department:</strong> {{ data?.department_name || data?.doctor?.department_name }}</p>
+    </div>
+  </div>
+
+  <form [formGroup]="profileForm" *ngIf="editing">
+    <mat-form-field class="full-width">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="first_name">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Last Name</mat-label>
+      <input matInput formControlName="last_name">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Patronymic</mat-label>
+      <input matInput formControlName="patronymic">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Gender</mat-label>
+      <mat-select formControlName="gender">
+        <mat-option value="male">Male</mat-option>
+        <mat-option value="female">Female</mat-option>
+        <mat-option value="other">Other</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Date of birth</mat-label>
+      <input matInput type="date" formControlName="date_of_birth">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>City</mat-label>
+      <input matInput formControlName="city">
+    </mat-form-field>
+
+    <div *ngIf="isDoctor">
+      <mat-form-field class="full-width">
+        <mat-label>Clinic</mat-label>
+        <mat-select formControlName="clinic_name">
+          <mat-option *ngFor="let c of clinics" [value]="c">{{ c }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Specialization</mat-label>
+        <mat-select formControlName="specialization">
+          <mat-option *ngFor="let s of specializations" [value]="s">{{ s }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Department</mat-label>
+        <mat-select formControlName="department_name">
+          <mat-option *ngFor="let d of departments" [value]="d">{{ d }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">Close</button>
+  <button mat-icon-button (click)="toggleEdit()" aria-label="Edit">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="profileForm.invalid || loading" *ngIf="editing">Save</button>
+</div>

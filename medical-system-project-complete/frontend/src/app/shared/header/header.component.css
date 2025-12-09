@@ -9,3 +9,12 @@
   margin-right: 15px;
   font-size: 14px;
 }
+
+.lang-select {
+  margin-left: 16px;
+  width: 80px;
+}
+
+.lang-select .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}

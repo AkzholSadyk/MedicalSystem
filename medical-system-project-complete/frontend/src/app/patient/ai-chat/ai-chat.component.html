@@ -2,30 +2,39 @@
   <h2>AI Medical Assistant</h2>
 
   <mat-card class="chat-card">
-    <div class="chat-sidebar">
-      <button mat-raised-button color="primary" class="full-width" (click)="startNewChat()">
-        <mat-icon>add</mat-icon> New Chat
-      </button>
-      <mat-divider></mat-divider>
-      <mat-nav-list *ngIf="!loadingSessions">
-        <h3 mat-subheader>Past Sessions</h3>
-        <a mat-list-item *ngFor="let session of sessions" (click)="selectSession(session)" [class.active-session]="session.id === currentSession?.id">
-          <mat-icon matListItemIcon>chat</mat-icon>
-          <span matListItemTitle>{{ session.title | slice:0:25 }}...</span>
-        </a>
-      </mat-nav-list>
-      <div *ngIf="loadingSessions" class="loading-sessions">
-        <!-- <mat-spinner [diameter]="20"></mat-spinner> -->
-        <p>Loading sessions...</p>
-      </div>
-    </div>
+  <!-- compact sidebar removed - replaced with header History button -->
 
     <div class="chat-main">
       <div class="chat-header">
-        <h3>{{ currentSession ? currentSession.title : 'New Conversation' }}</h3>
+        <div class="header-left">
+          <h3>{{ currentSession ? currentSession.title : 'New Conversation' }}</h3>
+        </div>
+        <div class="header-right">
+          <button mat-icon-button aria-label="History" (click)="toggleHistory()">
+            <mat-icon>history</mat-icon>
+          </button>
+          <button mat-mini-fab color="primary" aria-label="New chat" (click)="startNewChat()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
       </div>
 
-      <div class="chat-messages">
+      <div class="history-panel" *ngIf="showHistory">
+        <h4>Past Sessions</h4>
+        <mat-nav-list *ngIf="!loadingSessions && sessions.length > 0">
+          <a mat-list-item *ngFor="let session of sessions" (click)="selectSession(session); toggleHistory()" [class.active-session]="session.id === currentSession?.id">
+            <mat-icon matListItemIcon>chat</mat-icon>
+            <span matListItemTitle>{{ session.title | slice:0:30 }}...</span>
+          </a>
+        </mat-nav-list>
+        <div *ngIf="loadingSessions" class="loading-sessions">
+          <mat-spinner [diameter]="20"></mat-spinner>
+          <p>Loading...</p>
+        </div>
+        <div *ngIf="!loadingSessions && sessions.length === 0" class="no-sessions">No past sessions</div>
+      </div>
+
+  <div class="chat-messages" #messagesContainer>
         <div *ngIf="!currentSession" class="welcome-message">
           <mat-icon>smart_toy</mat-icon>
           <p>Start a new conversation with your AI Medical Assistant.</p>
@@ -49,7 +58,7 @@
       <div class="chat-input">
         <form [formGroup]="chatForm" (ngSubmit)="sendMessage()">
           <mat-form-field appearance="outline" class="full-width">
-            <input matInput formControlName="message" placeholder="Ask your medical question..." required>
+              <input #messageInput matInput formControlName="message" placeholder="Ask your medical question..." required (keydown)="onEnter($event)">
             <button mat-icon-button matSuffix color="primary" type="submit" [disabled]="chatForm.invalid || loadingChat">
               <mat-icon>send</mat-icon>
             </button>

@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
@@ -17,6 +17,11 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=6)
+    patronymic: Optional[str] = None
+    gender: Optional[str] = None
+    phone: Optional[str] = None
+    date_of_birth: Optional[date] = None
+    city: Optional[str] = None
 
 
 class UserUpdate(BaseModel):
@@ -89,47 +94,6 @@ class PatientRead(PatientBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-# ============= Doctor Schemas =============
-class DoctorBase(BaseModel):
-    first_name: str = Field(..., min_length=1, max_length=100)
-    last_name: str = Field(..., min_length=1, max_length=100)
-    patronymic: Optional[str] = Field(None, max_length=100)
-    city: Optional[str] = Field(None, max_length=100)
-    specialization: Optional[str] = Field(None, max_length=100)
-    phone: Optional[str] = Field(None, max_length=20)
-    license_number: Optional[str] = Field(None, max_length=50)
-    years_of_experience: Optional[int] = Field(None, ge=0)
-    education: Optional[str] = None
-    bio: Optional[str] = None
-    consultation_fee: Optional[Decimal] = Field(None, ge=0)
-
-
-class DoctorCreate(DoctorBase):
-    user_id: Optional[int] = None
-
-
-class DoctorUpdate(BaseModel):
-    first_name: Optional[str] = Field(None, min_length=1, max_length=100)
-    last_name: Optional[str] = Field(None, min_length=1, max_length=100)
-    patronymic: Optional[str] = Field(None, max_length=100)
-    city: Optional[str] = Field(None, max_length=100)
-    specialization: Optional[str] = Field(None, max_length=100)
-    phone: Optional[str] = Field(None, max_length=20)
-    license_number: Optional[str] = Field(None, max_length=50)
-    years_of_experience: Optional[int] = Field(None, ge=0)
-    education: Optional[str] = None
-    bio: Optional[str] = None
-    consultation_fee: Optional[Decimal] = Field(None, ge=0)
-
-
-class DoctorRead(DoctorBase):
-    id: int
-    user_id: Optional[int] = None
-    created_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)
-
-
 # ============= Clinic Schemas =============
 class ClinicBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=200)
@@ -188,13 +152,62 @@ class DepartmentRead(DepartmentBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+# ============= Doctor Schemas =============
+class DoctorBase(BaseModel):
+    first_name: str = Field(..., min_length=1, max_length=100)
+    last_name: str = Field(..., min_length=1, max_length=100)
+    patronymic: Optional[str] = Field(None, max_length=100)
+    city: Optional[str] = Field(None, max_length=100)
+    specialization: Optional[str] = Field(None, max_length=100)
+    phone: Optional[str] = Field(None, max_length=20)
+    license_number: Optional[str] = Field(None, max_length=50)
+    years_of_experience: Optional[int] = Field(None, ge=0)
+    education: Optional[str] = None
+    bio: Optional[str] = None
+    consultation_fee: Optional[Decimal] = Field(None, ge=0)
+
+
+class DoctorCreate(DoctorBase):
+    user_id: Optional[int] = None
+
+
+class DoctorUpdate(BaseModel):
+    first_name: Optional[str] = Field(None, min_length=1, max_length=100)
+    last_name: Optional[str] = Field(None, min_length=1, max_length=100)
+    patronymic: Optional[str] = Field(None, max_length=100)
+    city: Optional[str] = Field(None, max_length=100)
+    specialization: Optional[str] = Field(None, max_length=100)
+    phone: Optional[str] = Field(None, max_length=20)
+    license_number: Optional[str] = Field(None, max_length=50)
+    years_of_experience: Optional[int] = Field(None, ge=0)
+    education: Optional[str] = None
+    bio: Optional[str] = None
+    consultation_fee: Optional[Decimal] = Field(None, ge=0)
+
+
+class DoctorRead(DoctorBase):
+    id: int
+    user_id: Optional[int] = None
+    created_at: datetime
+    # Include related clinics and departments for convenience in responses
+    clinics: List["ClinicRead"] = []
+    departments: List["DepartmentRead"] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 # ============= Appointment Schemas =============
 class AppointmentBase(BaseModel):
-    patient_id: int
+    # patient_id may be omitted when the authenticated patient creates the appointment
+    patient_id: Optional[int] = None
     doctor_id: int
     clinic_id: Optional[int] = None
-    appointment_date: date
-    appointment_time: str = Field(..., pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")
+    # Accept either a date or a datetime from the client; router will convert datetime -> date/time
+    appointment_date: Union[date, datetime]
+    # appointment_time may be omitted if client sends a datetime
+    appointment_time: Optional[str] = Field(
+        None, pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+    )
     duration: int = Field(default=30, ge=15, le=180)
     status: str = Field(
         default="scheduled", pattern="^(scheduled|completed|cancelled|no_show)$"
@@ -386,11 +399,6 @@ class ChatSessionWithMessages(ChatSession):
     messages: List[ChatMessageResponse] = []
 
 
-from datetime import datetime
-
-from pydantic import BaseModel
-
-
 class UserOut(BaseModel):
     id: int
     username: str
@@ -407,12 +415,13 @@ class Token(BaseModel):
     token_type: str = "bearer"
     user: UserOut
 
-    # ============= AI Chat Schemas (новые/исправленные) =============
-    # Pydantic-схема для чтения AI Chat Session
+
+# ============= AI Chat Schemas (новые/исправленные) =============
+# Pydantic-схема для чтения AI Chat Session
 
 
 class AIChatSessionRead(BaseModel):
-    id: int  # Используем id как идентификатор сессии
+    id: int
     user_id: int
     title: Optional[str] = None
     started_at: datetime
@@ -420,8 +429,6 @@ class AIChatSessionRead(BaseModel):
     is_active: bool
 
     model_config = ConfigDict(from_attributes=True)
-
-    # Pydantic-схема для чтения AI Chat Session с сообщениями
 
 
 class AIChatSessionWithMessagesRead(AIChatSessionRead):

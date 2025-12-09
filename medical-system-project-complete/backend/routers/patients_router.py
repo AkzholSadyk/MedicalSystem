@@ -112,6 +112,26 @@ async def update_my_profile(
     return patient
 
 
+@router.patch("/me", response_model=schemas.PatientRead)
+async def patch_my_profile(
+    patient_data: schemas.PatientUpdate,
+    patient: Patient = Depends(get_current_patient),
+    db: Session = Depends(get_db),
+):
+    """
+    Partially update current patient's profile
+    """
+    update_data = patient_data.model_dump(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(patient, field, value)
+
+    db.commit()
+    db.refresh(patient)
+
+    return patient
+
+
 @router.put("/{patient_id}", response_model=schemas.PatientRead)
 async def update_patient(
     patient_id: int,

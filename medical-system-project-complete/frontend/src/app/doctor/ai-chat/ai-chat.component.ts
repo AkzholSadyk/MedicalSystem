@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { AiChatService } from '../../core/services/ai-chat.service';
 import { ChatSession, ChatMessage } from '../../core/models/ai-chat.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -53,12 +53,15 @@ import { MatOptionModule } from '@angular/material/core';
     MatOptionModule
   ]
 })
-export class AiChatComponent implements OnInit {
+export class AiChatComponent implements OnInit, AfterViewChecked {
   sessions: ChatSession[] = [];
   currentSession: ChatSession | null = null;
   loadingSessions = true;
   loadingChat = false;
   chatForm!: FormGroup;
+  @ViewChild('messagesContainer') private messagesContainer?: ElementRef;
+  @ViewChild('messageInput') private messageInput?: ElementRef;
+  showHistory = false;
 
   constructor(private chatService: AiChatService, private fb: FormBuilder) { }
 
@@ -93,6 +96,8 @@ export class AiChatComponent implements OnInit {
       next: (data) => {
         this.currentSession = data;
         this.loadingChat = false;
+  // scroll to bottom after session messages load
+  setTimeout(() => this.scrollToBottom(), 0);
       },
       error: (err) => {
         console.error('Error loading chat messages', err);
@@ -104,6 +109,14 @@ export class AiChatComponent implements OnInit {
   startNewChat(): void {
     this.currentSession = null;
     this.chatForm.reset();
+  // focus input for quick typing when starting a new chat
+  setTimeout(() => this.messageInput?.nativeElement?.focus(), 0);
+    // close history panel when starting a new chat
+    this.showHistory = false;
+  }
+
+  toggleHistory(): void {
+    this.showHistory = !this.showHistory;
   }
 
   sendMessage(): void {
@@ -114,7 +127,7 @@ export class AiChatComponent implements OnInit {
     const content = this.chatForm.value.message;
     this.chatForm.reset();
 
-    // Optimistically add user message
+   
     const userMessage: ChatMessage = {
       role: 'user',
       content: content,
@@ -123,7 +136,7 @@ export class AiChatComponent implements OnInit {
 
     if (!this.currentSession) {
       this.currentSession = {
-        id: 0, // Temporary ID
+        id: 0, 
         user_id: 0,
         title: 'New Chat',
         created_at: new Date().toISOString(),
@@ -131,6 +144,12 @@ export class AiChatComponent implements OnInit {
       };
     }
     this.currentSession.messages.push(userMessage);
+
+    
+    setTimeout(() => {
+      this.scrollToBottom();
+      this.messageInput?.nativeElement?.focus();
+    }, 0);
 
     this.loadingChat = true;
     this.chatService.sendMessage({
@@ -140,12 +159,41 @@ export class AiChatComponent implements OnInit {
       next: (updatedSession) => {
         this.currentSession = updatedSession;
         this.loadingChat = false;
-        this.loadSessions(); // Reload sessions to update list
+        this.loadSessions(); 
+        // ensure view shows response and keep input focused
+        setTimeout(() => {
+          this.scrollToBottom();
+          this.messageInput?.nativeElement?.focus();
+        }, 0);
       },
       error: (err) => {
         console.error('Error sending message', err);
         this.loadingChat = false;
       }
     });
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  onEnter(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      if (!this.loadingChat && this.chatForm.valid) {
+        this.sendMessage();
+      }
+    }
+  }
+
+  private scrollToBottom(): void {
+    try {
+      const el = this.messagesContainer?.nativeElement;
+      if (el) {
+        el.scrollTop = el.scrollHeight;
+      }
+    } catch (err) {
+      
+    }
   }
 }

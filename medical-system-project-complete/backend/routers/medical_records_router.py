@@ -1,12 +1,11 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-
 from database import get_db
 from dependencies import get_current_user, require_role
+from fastapi import APIRouter, Depends, HTTPException, status
 from models import Doctor, MedicalRecord, Patient, User
 from schemas import MedicalRecordCreate, MedicalRecordRead, MedicalRecordUpdate
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -38,6 +37,36 @@ async def get_medical_records(
     records = (
         query.order_by(MedicalRecord.record_date.desc()).offset(skip).limit(limit).all()
     )
+    return records
+
+
+@router.get("/patient", response_model=List[MedicalRecordRead])
+async def get_current_patient_medical_records(
+    skip: int = 0,
+    limit: int = 100,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Get medical records for the authenticated patient user.
+    This explicit route avoids treating the string 'patient' as an integer path parameter.
+    """
+    if current_user.role != "patient":
+        return []
+
+    patient = db.query(Patient).filter(Patient.user_id == current_user.id).first()
+    if not patient:
+        return []
+
+    records = (
+        db.query(MedicalRecord)
+        .filter(MedicalRecord.patient_id == patient.id)
+        .order_by(MedicalRecord.record_date.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
     return records
 
 

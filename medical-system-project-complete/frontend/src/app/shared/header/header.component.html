@@ -2,13 +2,21 @@
   <button mat-icon-button (click)="toggleSidenav.emit()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>Medical System</span>
+  <span>{{ 'HEADER.TITLE' | translate }}</span>
+  <mat-form-field appearance="outline" class="lang-select">
+    <mat-select [value]="currentLang" (selectionChange)="setLanguage($event.value)">
+      <mat-option *ngFor="let l of languages" [value]="l.code">{{ l.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
   <span class="spacer"></span>
   <div *ngIf="currentUser" class="user-info">
     <mat-icon>person</mat-icon>
-    <span>{{ currentUser.username }} ({{ currentUser.role | uppercase }})</span>
+    <span>{{ currentUser.first_name }} {{ currentUser.last_name }} ({{ currentUser.role | uppercase }})</span>
   </div>
-  <button mat-icon-button (click)="onLogout()">
+  <button mat-icon-button (click)="openProfileDialog()" *ngIf="currentUser" [attr.aria-label]="'HEADER.PROFILE' | translate">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <button mat-icon-button (click)="onLogout()" [attr.aria-label]="'HEADER.LOGOUT' | translate">
     <mat-icon>logout</mat-icon>
   </button>
 </mat-toolbar>

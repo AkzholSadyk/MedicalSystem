@@ -1,0 +1,69 @@
+<form [formGroup]="profileForm" (ngSubmit)="save()">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>First Name</mat-label>
+    <input matInput formControlName="first_name" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Last Name</mat-label>
+    <input matInput formControlName="last_name" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Patronymic</mat-label>
+    <input matInput formControlName="patronymic">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Gender</mat-label>
+    <mat-select formControlName="gender">
+      <mat-option value="male">Male</mat-option>
+      <mat-option value="female">Female</mat-option>
+      <mat-option value="other">Other</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Phone</mat-label>
+    <input matInput formControlName="phone">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Date of birth</mat-label>
+    <input matInput formControlName="date_of_birth" type="date">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>City</mat-label>
+    <input matInput formControlName="city">
+  </mat-form-field>
+
+  <div *ngIf="isDoctor">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Clinic</mat-label>
+      <mat-select formControlName="clinic_name">
+        <mat-option *ngFor="let c of clinics" [value]="c">{{ c }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Specialization</mat-label>
+      <mat-select formControlName="specialization">
+        <mat-option *ngFor="let s of specializations" [value]="s">{{ s }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Department</mat-label>
+      <mat-select formControlName="department_name">
+        <mat-option *ngFor="let d of departments" [value]="d">{{ d }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid || loading" class="full-width">
+    Save
+  </button>
+</form>

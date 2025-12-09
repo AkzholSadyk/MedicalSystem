@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="Medical System API with AI Chat integration 🏥",
+    description="Medical System API with AI Chat integration",
     docs_url="/docs",
     redoc_url="/redoc",
 )
@@ -97,13 +97,3 @@ if __name__ == "__main__":
 
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=settings.DEBUG)
 
-# import requests
-
-# def ask_ai(prompt: str):
-#     response = requests.post(
-#         "http://localhost:11434/api/generate",
-#         json={"model": "llama3", "prompt": prompt}
-#     )
-
-#     data = response.json()
-#     return data.get("response", "")

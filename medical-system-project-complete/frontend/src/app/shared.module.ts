@@ -9,11 +9,19 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { ProfileDialogComponent } from './shared/profile-dialog/profile-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const SHARED_COMPONENTS = [
   LayoutComponent,
   SidebarComponent,
-  HeaderComponent
+  HeaderComponent,
+  ProfileDialogComponent
 ];
 
 const SHARED_MODULES = [
@@ -24,11 +32,17 @@ const SHARED_MODULES = [
   MatToolbarModule,
   MatIconModule,
   MatButtonModule
+  ,MatDialogModule,
+  ReactiveFormsModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSelectModule,
+  TranslateModule
 ];
 
 @NgModule({
   declarations: [
-    ...SHARED_COMPONENTS
+  ...SHARED_COMPONENTS
   ],
   imports: [
     ...SHARED_MODULES

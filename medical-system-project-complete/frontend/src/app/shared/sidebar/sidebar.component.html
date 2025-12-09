@@ -1,16 +1,16 @@
 <mat-nav-list>
   <div class="logo-container">
     <mat-icon color="primary">local_hospital</mat-icon>
-    <span class="logo-text">Medical System</span>
+    <span class="logo-text">{{ 'SIDEBAR.TITLE' | translate }}</span>
   </div>
   <mat-divider></mat-divider>
   <a mat-list-item *ngFor="let item of menuItems" [routerLink]="item.route" routerLinkActive="active-link">
     <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-    <span matListItemTitle>{{ item.name }}</span>
+    <span matListItemTitle>{{ item.nameKey | translate }}</span>
   </a>
   <mat-divider></mat-divider>
   <a mat-list-item (click)="authService.logout()">
     <mat-icon matListItemIcon>logout</mat-icon>
-    <span matListItemTitle>Logout</span>
+    <span matListItemTitle>{{ 'SIDEBAR.LOGOUT' | translate }}</span>
   </a>
 </mat-nav-list>

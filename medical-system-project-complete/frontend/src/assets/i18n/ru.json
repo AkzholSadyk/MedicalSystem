@@ -1,0 +1,45 @@
+{
+  "HEADER": {
+    "TITLE": "Медицинская Система",
+    "PROFILE": "Профиль",
+    "LOGOUT": "Выйти",
+    "LANGUAGE": "Язык"
+  },
+  "SIDEBAR": {
+    "TITLE": "Медицинская Система",
+    "LOGOUT": "Выйти",
+    "PATIENT": {
+      "DASHBOARD": "Панель управления",
+      "APPOINTMENTS": "Записи",
+      "MEDICAL_RECORDS": "Медицинские записи",
+      "FIND_DOCTOR": "Найти врача",
+      "AI_CHAT": "AI Чат"
+    },
+    "DOCTOR": {
+      "DASHBOARD": "Панель управления",
+      "MY_PATIENTS": "Мои пациенты",
+      "APPOINTMENTS": "Записи",
+      "MEDICAL_RECORDS": "Медицинские записи",
+      "AI_ASSISTANT": "AI Ассистент"
+    },
+    "ADMIN": {
+      "DASHBOARD": "Панель управления",
+      "USERS": "Пользователи",
+      "CLINICS": "Клиники"
+    }
+  },
+  "REGISTER": {
+    "USERNAME": "Имя пользователя",
+    "FIRST_NAME": "Имя",
+    "LAST_NAME": "Фамилия",
+    "EMAIL": "Электронная почта",
+    "PASSWORD": "Пароль",
+    "ROLE": "Роль",
+    "REGISTER_BUTTON": "Регистрация"
+  },
+  "PROFILE": {
+    "TITLE": "Профиль",
+    "SAVE": "Сохранить",
+    "CANCEL": "Отмена"
+  }
+}

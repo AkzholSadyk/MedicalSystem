@@ -8,17 +8,12 @@ import { AppointmentsComponent } from './appointments/appointments.component';
 import { RecordsComponent } from './records/records.component';
 import { AiChatComponent } from './ai-chat/ai-chat.component';
 
-// Generate components for these routes
-// import { DashboardComponent } from './dashboard/dashboard.component';
-// import { PatientsComponent } from './patients/patients.component';
-// import { AppointmentsComponent } from './appointments/appointments.component';
-// import { RecordsComponent } from './records/records.component';
-// import { AiChatComponent } from './ai-chat/ai-chat.component';
+
 
 const routes: Routes = [
   {
     path: '',
-    component: LayoutComponent, // Use the shared layout component
+    component: LayoutComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'patients', component: PatientsComponent },

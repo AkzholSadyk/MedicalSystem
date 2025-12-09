@@ -17,7 +17,7 @@
           <mat-label>Doctor</mat-label>
           <mat-select formControlName="doctor_id" required>
             <mat-option *ngFor="let doctor of doctors" [value]="doctor.id">
-              {{ doctor.full_name }} ({{ doctor.specialization }})
+              {{ doctor.first_name }} {{ doctor.last_name }} ({{ doctor.specialization }})
             </mat-option>
           </mat-select>
           <mat-error *ngIf="appointmentForm.get('doctor_id')?.hasError('required')">Doctor is required</mat-error>
@@ -60,7 +60,7 @@
           <!-- Doctor Name Column -->
           <ng-container matColumnDef="doctor_name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Doctor </th>
-            <td mat-cell *matCellDef="let element"> {{element.doctor_name}} </td>
+            <td mat-cell *matCellDef="let element"> {{ element.doctor?.first_name || '—' }} {{ element.doctor?.last_name || '' }} </td>
           </ng-container>
 
           <!-- Date Column -->

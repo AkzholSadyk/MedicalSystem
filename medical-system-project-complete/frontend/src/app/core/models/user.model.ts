@@ -1,5 +1,7 @@
 export interface User {
   id: number;
+  first_name?: string;
+  last_name?: string;
   username: string;
   email: string;
   role: 'patient' | 'doctor' | 'admin';
@@ -17,6 +19,11 @@ export interface RegisterData {
   email: string;
   password: string;
   role: 'patient' | 'doctor';
+  patronymic?: string;
+  gender?: string;
+  phone?: string;
+  date_of_birth?: string;
+  city?: string;
 }
 
 export interface Token {

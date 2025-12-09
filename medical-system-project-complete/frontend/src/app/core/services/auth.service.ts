@@ -66,6 +66,31 @@ export class AuthService {
     );
   }
 
+  // Get current user's profile (patient or doctor depending on role)
+  getProfile(): Observable<any> {
+    const user = this.currentUserValue || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null);
+    const role = user?.role || 'patient';
+    const endpoint = role === 'doctor' ? 'doctors' : 'patients';
+    return this.http.get<any>(`${this.apiUrl}/${endpoint}/me`).pipe(
+      // no local storage update here; caller can handle
+    );
+  }
+
+  updateProfile(payload: any): Observable<any> {
+    const user = this.currentUserValue || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null);
+    const role = user?.role || 'patient';
+    const endpoint = role === 'doctor' ? 'doctors' : 'patients';
+    if (role === 'doctor') {
+      return this.http.put<any>(`${this.apiUrl}/${endpoint}/me`, payload).pipe(
+        tap(() => this.fetchCurrentUser().subscribe())
+      );
+    }
+
+    return this.http.patch<any>(`${this.apiUrl}/${endpoint}/me`, payload).pipe(
+      tap(() => this.fetchCurrentUser().subscribe())
+    );
+  }
+
   logout(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');

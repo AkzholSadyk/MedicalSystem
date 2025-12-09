@@ -1,0 +1,45 @@
+{
+  "HEADER": {
+    "TITLE": "Медициналық Жүйе",
+    "PROFILE": "Профиль",
+    "LOGOUT": "Шығу",
+    "LANGUAGE": "Тіл"
+  },
+  "SIDEBAR": {
+    "TITLE": "Медициналық Жүйе",
+    "LOGOUT": "Шығу",
+    "PATIENT": {
+      "DASHBOARD": "Басқару панелі",
+      "APPOINTMENTS": "Жазылымдар",
+      "MEDICAL_RECORDS": "Медициналық жазбалар",
+      "FIND_DOCTOR": "Дәрігер табу",
+      "AI_CHAT": "AI Чат"
+    },
+    "DOCTOR": {
+      "DASHBOARD": "Басқару панелі",
+      "MY_PATIENTS": "Менің науқастарым",
+      "APPOINTMENTS": "Жазылымдар",
+      "MEDICAL_RECORDS": "Медициналық жазбалар",
+      "AI_ASSISTANT": "AI Көмекші"
+    },
+    "ADMIN": {
+      "DASHBOARD": "Басқару панелі",
+      "USERS": "Пайдаланушылар",
+      "CLINICS": "Клиникалар"
+    }
+  },
+  "REGISTER": {
+    "USERNAME": "Пайдаланушы аты",
+    "FIRST_NAME": "Аты",
+    "LAST_NAME": "Тегi",
+    "EMAIL": "Электрондық пошта",
+    "PASSWORD": "Құпия сөз",
+    "ROLE": "Рөлі",
+    "REGISTER_BUTTON": "Тіркелу"
+  },
+  "PROFILE": {
+    "TITLE": "Профиль",
+    "SAVE": "Сақтау",
+    "CANCEL": "Болдырмау"
+  }
+}

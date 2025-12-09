@@ -57,33 +57,3 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
   ]
 })
 export class DoctorModule { }
-
-
-// @NgModule({
-//   declarations: [
-//     DoctorComponent,
-//     PatientsComponent,
-//     AppointmentsComponent,
-//   ],
-//   imports: [
-//     CommonModule,
-//     DoctorRoutingModule,
-//     SharedModule,
-//     FormsModule,
-//     ReactiveFormsModule,
-//     MatCardModule,
-//     MatGridListModule,
-//     MatIconModule,
-//     MatButtonModule,
-//     MatTableModule,
-//     MatPaginatorModule,
-//     MatSortModule,
-//     MatFormFieldModule,
-//     MatInputModule,
-//     MatSelectModule,
-//     MatDatepickerModule,
-//     DashboardComponent,
-//     RecordsComponent,
-//     AiChatComponent,
-//     MatNativeDateModule
-//   ]

@@ -1,0 +1,45 @@
+{
+  "HEADER": {
+    "TITLE": "Medical System",
+    "PROFILE": "Profile",
+    "LOGOUT": "Logout",
+    "LANGUAGE": "Language"
+  },
+  "SIDEBAR": {
+    "TITLE": "Medical System",
+    "LOGOUT": "Logout",
+    "PATIENT": {
+      "DASHBOARD": "Dashboard",
+      "APPOINTMENTS": "Appointments",
+      "MEDICAL_RECORDS": "Medical Records",
+      "FIND_DOCTOR": "Find Doctor",
+      "AI_CHAT": "AI Chat"
+    },
+    "DOCTOR": {
+      "DASHBOARD": "Dashboard",
+      "MY_PATIENTS": "My Patients",
+      "APPOINTMENTS": "Appointments",
+      "MEDICAL_RECORDS": "Medical Records",
+      "AI_ASSISTANT": "AI Assistant"
+    },
+    "ADMIN": {
+      "DASHBOARD": "Dashboard",
+      "USERS": "Users",
+      "CLINICS": "Clinics"
+    }
+  },
+  "REGISTER": {
+    "USERNAME": "Username",
+    "FIRST_NAME": "First Name",
+    "LAST_NAME": "Last Name",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "ROLE": "Role",
+    "REGISTER_BUTTON": "Register"
+  },
+  "PROFILE": {
+    "TITLE": "Profile",
+    "SAVE": "Save",
+    "CANCEL": "Cancel"
+  }
+}
