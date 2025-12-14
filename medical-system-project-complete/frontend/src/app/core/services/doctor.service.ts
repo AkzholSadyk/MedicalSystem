@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Doctor } from '../models/doctor.model';
@@ -12,8 +12,26 @@ export class DoctorService {
 
   constructor(private http: HttpClient) { }
 
-  getAllDoctors(): Observable<Doctor[]> {
-    return this.http.get<Doctor[]>(`${this.apiUrl}/doctors/`);
+  getAllDoctors(
+    specialization?: string,
+    clinic?: string,
+    search?: string
+  ): Observable<Doctor[]> {
+    let params = new HttpParams();
+    
+    if (specialization) {
+      params = params.set('specialization', specialization);
+    }
+    
+    if (clinic) {
+      params = params.set('clinic', clinic);
+    }
+    
+    if (search) {
+      params = params.set('search', search);
+    }
+    
+    return this.http.get<Doctor[]>(`${this.apiUrl}/doctors/`, { params });
   }
 
   getDoctorById(id: number): Observable<Doctor> {

@@ -1,2 +1,2 @@
 .full-width { width: 100%; }
-.error-message { color: #f44336; margin: 8px 0; }
+.error-message { color: var(--error-color, #f44336); margin: 8px 0; }

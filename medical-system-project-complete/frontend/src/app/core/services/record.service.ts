@@ -23,10 +23,10 @@ export class RecordService {
 
   // Doctor Endpoints
   getPatientRecordsForDoctor(patientId: number): Observable<MedicalRecord[]> {
-    return this.http.get<MedicalRecord[]>(`${this.apiUrl}/medical-records/doctor/patient/${patientId}`);
+  return this.http.get<MedicalRecord[]>(`${this.apiUrl}/medical-records/patient/${patientId}`);
   }
 
   createRecord(record: Omit<MedicalRecord, 'id' | 'doctor_name' | 'created_at'>): Observable<MedicalRecord> {
-    return this.http.post<MedicalRecord>(`${this.apiUrl}/medical-records/doctor`, record);
+  return this.http.post<MedicalRecord>(`${this.apiUrl}/medical-records`, record);
   }
 }

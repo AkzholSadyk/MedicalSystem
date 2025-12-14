@@ -3,6 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { RecordService } from '../../core/services/record.service';
+import { AuthService } from '../../core/services/auth.service';
 import { PatientService } from '../../core/services/patient.service';
 import { Patient } from '../../core/models/patient.model';
 import { MedicalRecord } from '../../core/models/record.model';
@@ -73,6 +74,7 @@ export class RecordsComponent implements OnInit {
   constructor(
     private patientService: PatientService,
     private recordService: RecordService,
+  private authService: AuthService,
     private fb: FormBuilder
   ) { }
 
@@ -80,9 +82,28 @@ export class RecordsComponent implements OnInit {
     this.loadPatients();
     this.recordForm = this.fb.group({
       patient_id: ['', Validators.required],
+      doctor_id: [''],
       diagnosis: ['', Validators.required],
       treatment: ['', Validators.required],
-      notes: ['']
+      notes: [''],
+      record_date: ['']
+    });
+
+    // Populate doctor_id and record_date defaults
+    // record_date -> today (YYYY-MM-DD)
+    const today = new Date().toISOString().slice(0,10);
+    this.recordForm.patchValue({ record_date: today });
+
+    // Try to fetch current user's profile to get doctor id (doctors route returns id)
+    this.authService.getProfile().subscribe({
+      next: (profile: any) => {
+        if (profile && profile.id) {
+          this.recordForm.patchValue({ doctor_id: profile.id });
+        }
+      },
+      error: () => {
+        // ignore; doctor_id may be set manually in UI later
+      }
     });
   }
 
@@ -131,15 +152,52 @@ export class RecordsComponent implements OnInit {
 
     const newRecord = this.recordForm.value;
 
-    this.recordService.createRecord(newRecord).subscribe({
-      next: () => {
-        alert('Medical record created successfully!');
-        this.recordForm.reset({ patient_id: this.selectedPatient?.id });
-        this.loadPatientRecords(this.selectedPatient!.id);
-      },
-      error: (err) => {
-        console.error('Error creating record', err);
+    const doCreate = (payload: any) => {
+      this.recordService.createRecord(payload).subscribe({
+        next: () => {
+          alert('Medical record created successfully!');
+          this.recordForm.reset({ patient_id: this.selectedPatient?.id });
+          this.loadPatientRecords(this.selectedPatient!.id);
+        },
+        error: (err) => {
+          console.error('Error creating record', err);
+          // Show backend validation errors when available
+          const details = err?.error || err?.message || 'Unknown error';
+          try {
+            alert('Error creating record: ' + JSON.stringify(details));
+          } catch (e) {
+            alert('Error creating record. See console for details.');
+          }
+        }
+      });
+    };
+
+    // If doctor_id is missing, attempt to fetch current profile (doctor) then create
+    if (!newRecord.doctor_id) {
+      this.authService.getProfile().subscribe({
+        next: (profile: any) => {
+          if (profile && profile.id) {
+            newRecord.doctor_id = profile.id;
+            // ensure record_date exists
+            if (!newRecord.record_date) {
+              newRecord.record_date = new Date().toISOString().slice(0,10);
+            }
+            doCreate(newRecord);
+          } else {
+            alert('Doctor id missing; cannot create record.');
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching profile before create', err);
+          alert('Unable to determine doctor id. See console for details.');
+        }
+      });
+    } else {
+      // ensure record_date exists
+      if (!newRecord.record_date) {
+        newRecord.record_date = new Date().toISOString().slice(0,10);
       }
-    });
+      doCreate(newRecord);
+    }
   }
 }

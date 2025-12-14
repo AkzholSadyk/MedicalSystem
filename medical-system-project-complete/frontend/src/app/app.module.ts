@@ -3,12 +3,14 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AboutComponent } from './about/about.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { CoreModule } from './core.module';
 import { SharedModule } from './shared.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -16,7 +18,8 @@ import { Observable } from 'rxjs';
 
 @NgModule({
   declarations: [
-    AppComponent
+  AppComponent,
+  AboutComponent
   ],
   imports: [
     BrowserModule,
@@ -24,6 +27,7 @@ import { Observable } from 'rxjs';
     CoreModule,
     HttpClientModule,
     MatProgressSpinnerModule,
+  MatCardModule,
     SharedModule,
     TranslateModule.forRoot({
       loader: {

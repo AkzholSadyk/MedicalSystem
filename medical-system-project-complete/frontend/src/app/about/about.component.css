@@ -1,0 +1,2 @@
+.about-page { display:flex; justify-content:center; padding:32px; }
+.about-page mat-card { max-width:720px; width:100%; }

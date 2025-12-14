@@ -13,6 +13,7 @@
       "APPOINTMENTS": "Appointments",
       "MEDICAL_RECORDS": "Medical Records",
       "FIND_DOCTOR": "Find Doctor",
+      "MEDICATIONS": "Medications Market",
       "AI_CHAT": "AI Chat"
     },
     "DOCTOR": {

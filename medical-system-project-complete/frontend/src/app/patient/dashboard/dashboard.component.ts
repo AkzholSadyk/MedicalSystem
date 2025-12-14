@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService, DashboardStats } from '../../core/services/dashboard.service';
+import { AppointmentService } from '../../core/services/appointment.service';
+import { Appointment } from '../../core/models/appointment.model';
 
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -56,8 +58,11 @@ import { MatOptionModule } from '@angular/material/core';
 export class DashboardComponent implements OnInit {
   stats: DashboardStats | null = null;
   loading = true;
+  upcoming: Appointment[] = [];
+  past: Appointment[] = [];
+  calendarDays: { date: Date; label: string; appointments: Appointment[] }[] = [];
 
-  constructor(private dashboardService: DashboardService) { }
+  constructor(private dashboardService: DashboardService, private appointmentService: AppointmentService) { }
 
   ngOnInit(): void {
     this.dashboardService.getPatientStats().subscribe({
@@ -68,6 +73,27 @@ export class DashboardComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching patient stats', err);
         this.loading = false;
+      }
+    });
+
+    // load appointments for dashboard (simple upcoming/past separation)
+    this.appointmentService.getPatientAppointments().subscribe({
+      next: (data: Appointment[]) => {
+        const now = new Date();
+        this.upcoming = data.filter(a => new Date(a.appointment_date) >= now);
+        this.past = data.filter(a => new Date(a.appointment_date) < now).sort((a,b) => +new Date(b.appointment_date) - +new Date(a.appointment_date));
+
+        // build a 7-day calendar starting today
+        this.calendarDays = [];
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+          const dayAppointments = this.upcoming.filter(a => new Date(a.appointment_date).toDateString() === d.toDateString());
+          const label = d.toLocaleDateString(undefined, { weekday: 'short', day: '2-digit' });
+          this.calendarDays.push({ date: d, label, appointments: dayAppointments });
+        }
+      },
+      error: (err) => {
+        console.error('Error loading appointments for dashboard', err);
       }
     });
   }

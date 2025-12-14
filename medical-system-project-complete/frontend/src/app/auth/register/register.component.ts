@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { RegisterData } from '../../core/models/user.model';
@@ -27,7 +27,7 @@ export class RegisterComponent implements OnInit {
       first_name: ['', Validators.required],   
       last_name: ['', Validators.required], 
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(8), this.passwordComplexityValidator]],
       role: ['patient', Validators.required],
       patronymic: [''],
       gender: [''],
@@ -35,6 +35,24 @@ export class RegisterComponent implements OnInit {
       date_of_birth: [''],
       city: ['']
     });
+  }
+
+  // Custom validator for password complexity - returns detailed error object
+  passwordComplexityValidator(control: AbstractControl) {
+    const value: string = control.value || '';
+    const result = {
+      requiredLength: value.length >= 8,
+      hasNumber: /[0-9]/.test(value),
+      hasSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(value),
+      hasUpper: /[A-Z]/.test(value)
+    };
+    const valid = result.requiredLength && result.hasNumber && result.hasSpecial && result.hasUpper;
+    return valid ? null : { passwordComplexity: result };
+  }
+
+  // Shortcut for template: form controls
+  get f() {
+    return this.registerForm.controls;
   }
 
   onSubmit(): void {

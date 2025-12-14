@@ -1,0 +1,11 @@
+.calendar-root{display:flex;flex-direction:column}
+.calendar-header{display:flex}
+.time-col{width:60px}
+.day-col{flex:1;padding:8px;border-left:1px solid var(--border-color)}
+.calendar-body{display:flex}
+.days-col{display:flex;flex:1}
+.hour-cell{height:48px;border-bottom:1px dashed var(--border-color);padding:4px}
+.appt-block{background:var(--primary);color:white;padding:4px;border-radius:4px;margin-bottom:4px;cursor:pointer}
+.appt-block.past{background:grey}
+.appt-time{font-size:12px}
+.appt-title{font-weight:600}

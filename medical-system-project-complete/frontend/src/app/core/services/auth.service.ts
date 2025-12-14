@@ -58,10 +58,27 @@ export class AuthService {
   }
 
   fetchCurrentUser(): Observable<User> {
+    // Fetch auth user first. If role is doctor, fetch `/doctors/me` and merge additional fields
     return this.http.get<User>(`${this.apiUrl}/auth/me`).pipe(
       tap(user => {
-        localStorage.setItem('user', JSON.stringify(user));
-        this.currentUserSubject.next(user);
+        if (user && user.role === 'doctor') {
+          // Fetch doctor profile and merge
+          this.http.get<any>(`${this.apiUrl}/doctors/me`).subscribe({
+            next: (doctorProfile) => {
+              const merged = { ...user, ...doctorProfile };
+              localStorage.setItem('user', JSON.stringify(merged));
+              this.currentUserSubject.next(merged as User);
+            },
+            error: () => {
+              // If fetching doctor profile fails, fall back to auth user
+              localStorage.setItem('user', JSON.stringify(user));
+              this.currentUserSubject.next(user);
+            }
+          });
+        } else {
+          localStorage.setItem('user', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+        }
       })
     );
   }

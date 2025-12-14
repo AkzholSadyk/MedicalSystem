@@ -1,0 +1,27 @@
+<div class="calendar-root">
+  <div class="calendar-header">
+    <div class="time-col">Time</div>
+    <div class="day-col" *ngFor="let d of days">{{ d | date:'EEE dd' }}</div>
+  </div>
+
+  <div class="calendar-body">
+    <div class="time-col">
+      <div *ngFor="let h of hours" class="hour-cell">{{ h }}:00</div>
+    </div>
+
+    <div class="days-col">
+      <div class="day-col" *ngFor="let d of days">
+        <div *ngFor="let h of hours" class="hour-cell">
+          <div *ngFor="let cell of grid" >
+            <ng-container *ngIf="cell.day.toDateString() === d.toDateString() && cell.hour === h">
+              <div *ngFor="let ev of cell.events" class="appt-block" (click)="openEvent(ev)">
+                <div class="appt-time">{{ ev.appointment_time || 'All day' }}</div>
+                <div class="appt-title">{{ ev.patient_name || (ev.patient?.first_name + ' ' + ev.patient?.last_name) || ev.doctor_name || (ev.doctor?.first_name + ' ' + ev.doctor?.last_name) }}</div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

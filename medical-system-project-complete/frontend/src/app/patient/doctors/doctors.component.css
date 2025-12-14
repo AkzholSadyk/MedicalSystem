@@ -7,6 +7,66 @@
   padding: 20px;
 }
 
+.search-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.search-field {
+  flex: 1;
+}
+
+.filters-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.active-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.filter-label {
+  font-weight: 500;
+  color: var(--muted-text);
+  margin-right: 8px;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chip-close {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.chip-close:hover {
+  opacity: 1;
+}
+
 .doctor-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -28,7 +88,7 @@
   width: 40px;
   height: 40px;
   line-height: 40px;
-  color: #3f51b5;
+  color: var(--accent-color);
 }
 
 .doctor-card mat-card-content p {

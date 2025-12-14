@@ -18,3 +18,8 @@
 .lang-select .mat-mdc-form-field-subscript-wrapper {
   display: none;
 }
+
+/* Header colors should follow theme variables */
+.user-info, .lang-select, .lang-select .mat-mdc-select-value {
+  color: var(--text-color= #ff0000);
+}

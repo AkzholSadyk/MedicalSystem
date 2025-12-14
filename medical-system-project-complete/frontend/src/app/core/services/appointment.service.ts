@@ -22,15 +22,34 @@ export class AppointmentService {
   }
 
   cancelAppointment(id: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/appointments/${id}/cancel`, {});
+  // Use the status update endpoint which the backend exposes as PATCH /appointments/{id}/status?status=...
+  return this.updateAppointmentStatus(id, 'cancelled');
   }
 
   // Doctor Endpoints
   getDoctorAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments/doctor`);
+    // Backend exposes a role-aware GET /appointments which returns doctor-specific
+    // appointments when the authenticated user is a doctor.
+    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments`);
   }
 
-  updateAppointmentStatus(id: number, status: 'completed' | 'cancelled'): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.apiUrl}/appointments/${id}/status`, { status });
+  // Calendar-specific endpoint: fetch events between two dates (YYYY-MM-DD)
+  getCalendarAppointments(from?: string, to?: string) {
+    let params = '';
+    if (from) params += `from=${encodeURIComponent(from)}`;
+    if (to) params += (params ? '&' : '') + `to=${encodeURIComponent(to)}`;
+    return this.http.get<any[]>(`${this.apiUrl}/appointments/calendar${params ? '?' + params : ''}`);
+  }
+
+  updateAppointmentStatus(id: number, status: 'completed' | 'cancelled' | 'scheduled' | 'no_show'):
+    Observable<Appointment> {
+    // Backend expects a PATCH to /appointments/{id}/status with the status as a query param
+    // or in some cases as a request body; the router defines a PATCH endpoint that
+    // accepts `status` as a required query parameter. We'll send an empty body and
+    // attach the status as a query param.
+    return this.http.patch<Appointment>(
+      `${this.apiUrl}/appointments/${id}/status?status=${encodeURIComponent(status)}`,
+      {}
+    );
   }
 }

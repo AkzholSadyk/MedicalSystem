@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import List, Optional
 
 from database import get_db
@@ -9,6 +9,7 @@ from schemas import (
     AppointmentCreate,
     AppointmentRead,
     AppointmentUpdate,
+    CalendarAppointment,
 )
 from sqlalchemy.orm import Session
 
@@ -184,6 +185,96 @@ async def get_appointment(
             )
 
     return appointment
+
+
+@router.get("/calendar", response_model=List[CalendarAppointment])
+async def get_calendar_appointments(
+    date_from: Optional[date] = Query(
+        None, alias="from", description="Start date (inclusive)"
+    ),
+    date_to: Optional[date] = Query(
+        None, alias="to", description="End date (inclusive)"
+    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Return appointments in a date range formatted for calendar display.
+    Role-filtered: patients see only their appointments; doctors see only their appointments; admins see all.
+    """
+    query = db.query(Appointment)
+
+    # Role filtering
+    if current_user.role == "patient":
+        patient = db.query(Patient).filter(Patient.user_id == current_user.id).first()
+        if patient:
+            query = query.filter(Appointment.patient_id == patient.id)
+    elif current_user.role == "doctor":
+        doctor = db.query(Doctor).filter(Doctor.user_id == current_user.id).first()
+        if doctor:
+            query = query.filter(Appointment.doctor_id == doctor.id)
+
+    if date_from:
+        query = query.filter(Appointment.appointment_date >= date_from)
+    if date_to:
+        query = query.filter(Appointment.appointment_date <= date_to)
+
+    appointments = query.order_by(
+        Appointment.appointment_date, Appointment.appointment_time
+    ).all()
+
+    results: List[CalendarAppointment] = []
+    for appt in appointments:
+        # Build start datetime by combining date and time
+        start_dt = None
+        try:
+            t = (
+                datetime.strptime(appt.appointment_time, "%H:%M").time()
+                if appt.appointment_time
+                else None
+            )
+        except Exception:
+            t = None
+
+        if t:
+            start_dt = datetime.combine(appt.appointment_date, t)
+        else:
+            # fallback to midnight
+            start_dt = datetime.combine(appt.appointment_date, datetime.min.time())
+
+        end_dt = start_dt + timedelta(minutes=appt.duration or 30)
+
+        patient_summary = None
+        if getattr(appt, "patient", None):
+            patient_summary = {
+                "id": appt.patient.id,
+                "first_name": appt.patient.first_name,
+                "last_name": appt.patient.last_name,
+                "phone": appt.patient.phone,
+            }
+
+        doctor_summary = None
+        if getattr(appt, "doctor", None):
+            doctor_summary = {
+                "id": appt.doctor.id,
+                "first_name": appt.doctor.first_name,
+                "last_name": appt.doctor.last_name,
+                "phone": appt.doctor.phone,
+            }
+
+        results.append(
+            CalendarAppointment(
+                id=appt.id,
+                start_time=start_dt,
+                end_time=end_dt,
+                reason=appt.notes,
+                status=appt.status,
+                patient=patient_summary,
+                doctor=doctor_summary,
+            )
+        )
+
+    return results
 
 
 @router.post("", response_model=AppointmentRead, status_code=status.HTTP_201_CREATED)

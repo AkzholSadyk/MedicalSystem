@@ -2,7 +2,7 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+import models
 from config import settings
 from database import Base, engine
 
@@ -16,6 +16,7 @@ from routers import (
     dashboard_router,
     doctors_router,
     medical_records_router,
+    medications_router,
     patients_router,
 )
 
@@ -49,6 +50,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# Base.metadata.create_all(bind=engine)
+
+
 # Include routers
 app.include_router(auth_router.router, prefix="/auth", tags=["Authentication"])
 app.include_router(patients_router.router, prefix="/patients", tags=["Patients"])
@@ -58,6 +63,9 @@ app.include_router(
 )
 app.include_router(
     medical_records_router.router, prefix="/medical-records", tags=["Medical Records"]
+)
+app.include_router(
+    medications_router.router, prefix="/medications", tags=["Medications"]
 )
 app.include_router(dashboard_router.router, prefix="/dashboard", tags=["Dashboard"])
 app.include_router(ai_chat_router.router, prefix="/ai-chat", tags=["AI Chat"])

@@ -241,6 +241,26 @@ class AppointmentRead(AppointmentBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+# Calendar-specific read schema: includes nested patient and doctor summaries and iso datetimes
+class CalendarParticipant(BaseModel):
+    id: int
+    first_name: str
+    last_name: str
+    phone: Optional[str] = None
+
+
+class CalendarAppointment(BaseModel):
+    id: int
+    start_time: datetime
+    end_time: datetime
+    reason: Optional[str] = None
+    status: str
+    patient: Optional[CalendarParticipant] = None
+    doctor: Optional[CalendarParticipant] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 # ============= Medical Record Schemas =============
 class MedicalRecordBase(BaseModel):
     patient_id: int
@@ -433,4 +453,40 @@ class AIChatSessionRead(BaseModel):
 
 class AIChatSessionWithMessagesRead(AIChatSessionRead):
     messages: List[AIChatMessageRead] = []
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ============= Medication Schemas =============
+class MedicationBase(BaseModel):
+    """Base schema for medication data"""
+
+    name: str = Field(..., min_length=1, max_length=200)
+    generic_name: Optional[str] = Field(None, max_length=200)
+    description: Optional[str] = None
+    form: Optional[str] = Field(None, max_length=100)
+    image_url: Optional[str] = Field(None, max_length=500)
+
+
+class MedicationCreate(MedicationBase):
+    """Schema for creating a medication record"""
+
+    pass
+
+
+class MedicationUpdate(BaseModel):
+    """Schema for updating medication data"""
+
+    name: Optional[str] = Field(None, min_length=1, max_length=200)
+    generic_name: Optional[str] = Field(None, max_length=200)
+    description: Optional[str] = None
+    form: Optional[str] = Field(None, max_length=100)
+    image_url: Optional[str] = Field(None, max_length=500)
+
+
+class MedicationRead(MedicationBase):
+    """Schema for reading medication data"""
+
+    id: int
+    created_at: datetime
+
     model_config = ConfigDict(from_attributes=True)

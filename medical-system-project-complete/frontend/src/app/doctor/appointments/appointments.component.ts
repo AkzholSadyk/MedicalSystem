@@ -4,6 +4,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { AppointmentService } from '../../core/services/appointment.service';
 import { Appointment } from '../../core/models/appointment.model';
+import { PatientService } from '../../core/services/patient.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-appointments',
@@ -18,7 +20,7 @@ export class AppointmentsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private appointmentService: AppointmentService) { }
+  constructor(private appointmentService: AppointmentService, private patientService: PatientService) { }
 
   ngOnInit(): void {
     this.loadAppointments();
@@ -28,16 +30,52 @@ export class AppointmentsComponent implements OnInit {
     this.loading = true;
     this.appointmentService.getDoctorAppointments().subscribe({
       next: (data) => {
-        this.dataSource = new MatTableDataSource(data);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        this.loading = false;
+        const uniquePatientIds = Array.from(new Set(data.map(a => a.patient_id).filter(Boolean)));
+        if (uniquePatientIds.length === 0) {
+          this.finalizeDataSource(data);
+          return;
+        }
+
+        const requests = uniquePatientIds.map(id => this.patientService.getPatientById(id));
+        forkJoin(requests).subscribe({
+          next: (patients) => {
+            const patientMap: Record<number, any> = {};
+            patients.forEach(p => { if (p && (p as any).id) patientMap[(p as any).id] = p; });
+            const enriched = data.map(a => {
+              const p = patientMap[a.patient_id];
+              if (p) return { ...a, patient: { first_name: p.first_name, last_name: p.last_name }, patient_name: `${p.first_name} ${p.last_name}` };
+              return a;
+            });
+            this.finalizeDataSource(enriched);
+          },
+          error: (err) => {
+            console.warn('Failed fetching patients, using raw appointments', err);
+            this.finalizeDataSource(data);
+          }
+        });
       },
       error: (err) => {
         console.error('Error loading appointments', err);
         this.loading = false;
       }
     });
+  }
+
+  private finalizeDataSource(records: Appointment[]) {
+    this.dataSource = new MatTableDataSource(records);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.loading = false;
+  }
+
+  getPatientDisplayName(a: Appointment): string {
+    if (!a) return '';
+    // Prefer the nested patient object, then precomputed patient_name, then id
+    if (a.patient && (a.patient.first_name || a.patient.last_name)) {
+      return `${a.patient.first_name || ''} ${a.patient.last_name || ''}`.trim();
+    }
+  if (a.patient_name) return a.patient_name;
+  return a.patient_id != null ? String(a.patient_id) : 'Unknown';
   }
 
   applyFilter(event: Event) {

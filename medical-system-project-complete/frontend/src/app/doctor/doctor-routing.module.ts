@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from '../shared/layout/layout.component';
 import { DoctorComponent } from './doctor.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DoctorCalendarComponent } from './doctor-calendar.component';
 import { PatientsComponent } from './patients/patients.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
 import { RecordsComponent } from './records/records.component';
@@ -15,7 +16,7 @@ const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DoctorCalendarComponent },
       { path: 'patients', component: PatientsComponent },
       { path: 'appointments', component: AppointmentsComponent },
       { path: 'records', component: RecordsComponent },

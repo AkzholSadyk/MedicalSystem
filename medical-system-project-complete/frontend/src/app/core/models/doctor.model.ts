@@ -3,10 +3,15 @@ export interface Doctor {
   user_id: number;
   first_name?: string;
   last_name?: string;
-  full_name: string;
-  specialization: string;
-  phone_number: string;
-  clinic_name: string;
-  department_name: string;
-  created_at: string;
+  full_name?: string;
+  specialization?: string;
+  phone_number?: string;
+  // Backend may return `phone` instead of `phone_number`
+  phone?: string;
+  clinic_name?: string;
+  department_name?: string;
+  // Backend includes clinics/departments arrays
+  clinics?: Array<{ id?: number; name?: string }>;
+  departments?: Array<{ id?: number; name?: string }>;
+  created_at?: string;
 }

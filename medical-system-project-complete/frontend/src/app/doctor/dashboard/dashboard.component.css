@@ -18,7 +18,7 @@
   width: 40px;
   height: 40px;
   line-height: 40px;
-  color: #3f51b5;
+  color: var(--accent-color);
 }
 
 .stat-value {

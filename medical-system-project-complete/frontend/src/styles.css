@@ -62,3 +62,132 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border-radius: 4px;
   font-weight: 500;
 }
+
+/* Theme variables */
+:root.light_mode {
+  --bg-color: #fafafa;
+  --surface-color: #ffffff;
+  --card-color: #ffffff;
+  --toolbar-color: #3f51b5; /* material indigo */
+  --text-color: #212121;
+  --muted-text: rgba(0,0,0,0.6);
+  --error-color: #f44336;
+  --success-color: #2e7d32;
+  --border-color: rgba(0,0,0,0.12);
+  --hover-bg: rgba(0,0,0,0.04);
+  --accent-color: #3f51b5;
+}
+
+:root.dark_mode {
+  --bg-color: #6291ac;
+  --surface-color: #1b1b1b;
+  --card-color: #1e1e1e;
+  --toolbar-color: #032b43;
+  --text-color: #ffffff;
+  --muted-text: rgba(18, 32, 48, 0.6);
+  --error-color: #ef9a9a;
+  --success-color: #66bb6a;
+  --border-color: rgba(255,255,255,0.06);
+  --hover-bg: rgba(255,255,255,0.03);
+  --accent-color: #3f51b5;
+}
+
+/* Apply root-level variables */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Material overrides using variables */
+.mat-toolbar {
+  background: var(--toolbar-color) !important;
+  color: var(--text-color) !important;
+}
+.mat-card {
+  background: var(--card-color) !important;
+  color: var(--text-color) !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(0,0,0,0.12);
+}
+input, textarea {
+  background: transparent;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Auth toolbar (used on auth pages) */
+.auth-toolbar { display: flex; align-items: center; }
+.auth-toolbar .toolbar-title { font-weight: 600; margin-right: 12px; }
+.auth-toolbar .lang-select { width: 90px; margin-left: 12px; }
+
+/* Material overrides - consolidated */
+.mat-toolbar {
+  background: var(--toolbar-color) !important;
+  color: var(--text-color) !important;
+  box-shadow: 0 2px 4px rgba(2,6,23,0.12);
+}
+.mat-card {
+  background: var(--card-color) !important;
+  color: var(--text-color) !important;
+  box-shadow: 0 4px 16px rgba(2,6,23,0.08);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: var(--muted-text);
+}
+
+/* Strong scoped overrides to ensure dark mode surfaces and text are applied */
+.dark_mode .mat-card,
+.dark_mode .mat-toolbar,
+.dark_mode body,
+.dark_mode .layout-sidenav {
+  color: var(--text-color) !important;
+  background: none !important; /* prefer variables below */
+}
+.dark_mode body { background: var(--bg-color) !important; color: var(--text-color) !important; }
+.dark_mode .mat-card { background: var(--card-color) !important; }
+.dark_mode .mat-toolbar { background: var(--toolbar-color) !important; }
+
+.light_mode body { background: var(--bg-color); color: var(--text-color); }
+.light_mode .mat-card { background: var(--card-color); }
+.light_mode .mat-toolbar { background: var(--toolbar-color); }
+
+/* Dark-mode sidebar color override: make sidebar red in dark mode */
+.dark_mode .layout-sidenav {
+  background: #246489 !important; /* deep red */
+  border-right: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+/* Make header text/icons white in light mode per user request */
+.light_mode .mat-toolbar,
+.light_mode app-header,
+.light_mode .user-info,
+.light_mode .mat-toolbar .mat-icon,
+.light_mode .lang-select,
+.light_mode .mat-button,
+.light_mode .mat-icon-button {
+  color: #ffffff !important;
+}
+
+/* Ensure all text elements use primary text color */
+h1,h2,h3,h4,h5,h6, p, span, a, li, label {
+  color: var(--text-color) !important;
+}
+
+/* Sidebar and layout */
+.layout-sidenav {
+  background: var(--surface-color) !important;
+  color: var(--text-color) !important;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+.layout-content {
+  background: var(--bg-color) !important;
+}
+
+/* Buttons */
+.mat-button, .mat-raised-button, .mat-icon-button {
+  color: var(--text-color) !important;
+}

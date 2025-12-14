@@ -7,7 +7,7 @@
   </div>
 
   <div *ngIf="stats && !loading">
-    <mat-grid-list cols="4" rowHeight="100px" gutterSize="16px">
+  <mat-grid-list cols="4" rowHeight="100px" gutterSize="16px">
       <mat-grid-tile>
         <mat-card class="stat-card">
           <mat-card-header>
@@ -58,11 +58,46 @@
     </mat-grid-list>
   </div>
 
-  <mat-card class="recent-activity-card">
-    <mat-card-title>Recent Activity</mat-card-title>
+  <!-- Simple 7-day calendar view -->
+  <mat-card class="calendar-card">
+    <mat-card-title>Upcoming (7 days)</mat-card-title>
     <mat-card-content>
-      <p>Your recent appointments and record updates will appear here.</p>
-      <button mat-raised-button color="primary" routerLink="/patient/appointments">View Appointments</button>
+      <div class="week-grid">
+        <div class="week-header">
+          <div class="time-col">Time</div>
+          <div class="day-col" *ngFor="let day of calendarDays">{{ day.date | date:'EEE dd' }}</div>
+        </div>
+        <div class="week-body">
+          <div class="time-col">
+            <div *ngFor="let h of [8,9,10,11,12,13,14,15,16,17]" class="hour-cell">{{ h }}:00</div>
+          </div>
+          <div class="day-col" *ngFor="let day of calendarDays">
+            <div *ngFor="let h of [8,9,10,11,12,13,14,15,16,17]" class="hour-cell">
+              <div *ngFor="let a of day.appointments">
+                <ng-container *ngIf="(a.appointment_time ? +a.appointment_time.split(':')[0] : null) === h">
+                  <div class="appt-block">{{ a.appointment_time || 'All day' }} — {{ a.doctor_name || (a.doctor?.first_name + ' ' + a.doctor?.last_name) || a.patient_name }}</div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Past appointments -->
+  <mat-card class="past-card">
+    <mat-card-title>Past Appointments</mat-card-title>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let p of past | slice:0:5">
+          <div mat-line>{{ p.appointment_date | date:'mediumDate' }} — {{ p.doctor_name || (p.doctor?.first_name + ' ' + p.doctor?.last_name) }}</div>
+          <div mat-line class="muted">{{ p.notes || p.reason }}</div>
+        </mat-list-item>
+      </mat-list>
+      <div class="view-all">
+        <button mat-stroked-button routerLink="/patient/appointments">View all appointments</button>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

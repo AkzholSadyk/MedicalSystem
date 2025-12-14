@@ -1,0 +1,11 @@
+/* Password error block styles */
+.error-message {
+	color: var(--error-color, #d32f2f);
+	margin-top: 8px;
+}
+.error-message ul {
+	margin: 6px 0 0 18px;
+	padding: 0;
+}
+.error-message li { color: var(--error-color, #d32f2f); }
+.error-message li.valid { color: var(--success-color, #2e7d32); font-weight: 600; }

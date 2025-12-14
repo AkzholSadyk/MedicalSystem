@@ -1,3 +1,18 @@
+<mat-toolbar color="primary" class="auth-toolbar">
+  <span class="toolbar-title">Medical System</span>
+  <mat-form-field appearance="outline" class="lang-select">
+    <mat-select [value]="currentLang" (selectionChange)="setLanguage($event.value)">
+      <mat-option *ngFor="let l of languages" [value]="l.code">{{ l.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <span class="spacer"></span>
+  <a mat-button routerLink="/auth/login">Sign</a>
+  <a mat-button routerLink="/about">About</a>
+  <button mat-icon-button (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Switch to light' : 'Switch to dark'">
+    <mat-icon>{{ isDark ? 'dark_mode' : 'light_mode' }}</mat-icon>
+  </button>
+</mat-toolbar>
+
 <div class="auth-container">
   <mat-card class="auth-card">
     <mat-card-header>

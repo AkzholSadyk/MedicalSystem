@@ -17,6 +17,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     { nameKey: 'SIDEBAR.PATIENT.APPOINTMENTS', icon: 'event', route: '/patient/appointments' },
     { nameKey: 'SIDEBAR.PATIENT.MEDICAL_RECORDS', icon: 'folder_open', route: '/patient/records' },
     { nameKey: 'SIDEBAR.PATIENT.FIND_DOCTOR', icon: 'person_search', route: '/patient/doctors' },
+    { nameKey: 'SIDEBAR.PATIENT.MEDICATIONS', icon: 'medication', route: '/patient/medications' },
     { nameKey: 'SIDEBAR.PATIENT.AI_CHAT', icon: 'smart_toy', route: '/patient/ai-chat' },
   ];
 

@@ -2,10 +2,11 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 
 from database import get_db
 from dependencies import get_current_doctor, require_role
-from models import Doctor, User
+from models import Doctor, User, DoctorClinic, Clinic
 from schemas import DoctorCreate, DoctorRead, DoctorUpdate
 
 router = APIRouter()
@@ -16,14 +17,50 @@ async def get_doctors(
     skip: int = 0,
     limit: int = 100,
     specialization: Optional[str] = Query(None, description="Filter by specialization"),
+    clinic: Optional[str] = Query(None, description="Filter by clinic name"),
+    search: Optional[str] = Query(None, description="Search by name, specialization, or clinic"),
     db: Session = Depends(get_db),
 ):
+    """
+    Get list of doctors with optional filters.
+    Supports filtering by specialization, clinic, and general search.
+    """
     query = db.query(Doctor)
 
+    # Filter by specialization
     if specialization:
         query = query.filter(Doctor.specialization.ilike(f"%{specialization}%"))
 
-    doctors = query.offset(skip).limit(limit).all()
+    # Filter by clinic name (through DoctorClinic relationship)
+    if clinic:
+        query = query.join(DoctorClinic).join(Clinic).filter(
+            Clinic.name.ilike(f"%{clinic}%")
+        )
+
+    # General search filter (name, specialization, or clinic)
+    if search:
+        search_filter = f"%{search}%"
+        # Search in doctor name or specialization
+        name_filter = or_(
+            Doctor.first_name.ilike(search_filter),
+            Doctor.last_name.ilike(search_filter),
+            Doctor.specialization.ilike(search_filter)
+        )
+        
+        # Also search in clinics if clinic filter is not already applied
+        if not clinic:
+            clinic_subquery = db.query(DoctorClinic.doctor_id).join(Clinic).filter(
+                Clinic.name.ilike(search_filter)
+            ).subquery()
+            query = query.filter(or_(name_filter, Doctor.id.in_(clinic_subquery)))
+        else:
+            query = query.filter(name_filter)
+    else:
+        # If clinic filter is applied, ensure we join the tables
+        if clinic:
+            query = query.join(DoctorClinic).join(Clinic)
+
+    doctors = query.offset(skip).limit(limit).distinct().all()
     return doctors
 
 

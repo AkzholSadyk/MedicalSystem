@@ -4,6 +4,8 @@ import { User } from '../../core/models/user.model';
 import { MatDialog } from '@angular/material/dialog';
 import { ProfileDialogComponent } from '../profile-dialog/profile-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { ThemeService } from '../../core/services/theme.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -19,8 +21,10 @@ export class HeaderComponent implements OnInit {
     { code: 'kk', label: 'KZ' },
     { code: 'ru', label: 'RU' }
   ];
+  isDark = false;
+  private subs = new Subscription();
 
-  constructor(private authService: AuthService, private dialog: MatDialog, private translate: TranslateService) {
+  constructor(private authService: AuthService, private dialog: MatDialog, private translate: TranslateService, private theme: ThemeService) {
     // Устанавливаем язык из localStorage или используем язык по умолчанию
     const savedLang = localStorage.getItem('lang') || 'en';
     this.currentLang = savedLang;
@@ -45,6 +49,8 @@ export class HeaderComponent implements OnInit {
     this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
     });
+
+  this.subs.add(this.theme.isDark$.subscribe((value: boolean) => this.isDark = value));
   }
 
   onLogout(): void {
@@ -63,5 +69,13 @@ export class HeaderComponent implements OnInit {
         this.authService.fetchCurrentUser().subscribe();
       }
     });
+  }
+
+  toggleTheme(): void {
+    this.theme.toggleTheme();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

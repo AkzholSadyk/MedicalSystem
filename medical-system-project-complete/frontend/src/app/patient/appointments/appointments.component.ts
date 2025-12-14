@@ -1,8 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { forkJoin, of, take } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { AppointmentService } from '../../core/services/appointment.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Appointment } from '../../core/models/appointment.model';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -16,7 +19,7 @@ import { Doctor } from '../../core/models/doctor.model';
 })
 export class AppointmentsComponent implements OnInit {
   displayedColumns: string[] = ['doctor_name', 'appointment_date', 'reason', 'status', 'actions'];
-  dataSource!: MatTableDataSource<Appointment>;
+  dataSource!: MatTableDataSource<any>;
   loading = true;
   isCreating = false;
   appointmentForm!: FormGroup;
@@ -26,10 +29,12 @@ export class AppointmentsComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private appointmentService: AppointmentService,
-    private doctorService: DoctorService,
-    private fb: FormBuilder,
-    public dialog: MatDialog
+  private appointmentService: AppointmentService,
+  private doctorService: DoctorService,
+  private fb: FormBuilder,
+  public dialog: MatDialog,
+  private route: ActivatedRoute,
+  private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -40,16 +45,68 @@ export class AppointmentsComponent implements OnInit {
       appointment_date: ['', Validators.required],
       reason: ['', Validators.required]
     });
+
+    // If navigated with a doctor_id query param (from doctors list), open create form and preselect
+    this.route.queryParams.subscribe(params => {
+      const did = params['doctor_id'];
+      if (did) {
+        // Open create form and preselect doctor
+        this.isCreating = true;
+        // ensure doctors are loaded before setting value
+        if (this.doctors && this.doctors.length > 0) {
+          this.appointmentForm.patchValue({ doctor_id: +did });
+        } else {
+          // If doctors not loaded yet, request and take 1 result then patch
+          this.doctorService.getAllDoctors().pipe(take(1)).subscribe({
+            next: () => {
+              this.appointmentForm.patchValue({ doctor_id: +did });
+            },
+            error: () => { /* ignore */ }
+          });
+        }
+        // remove query param from URL after handling
+        this.router.navigate([], { queryParams: { doctor_id: null }, queryParamsHandling: 'merge' });
+      }
+    });
   }
 
   loadAppointments(): void {
     this.loading = true;
     this.appointmentService.getPatientAppointments().subscribe({
       next: (data) => {
-        this.dataSource = new MatTableDataSource(data);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        this.loading = false;
+        const appointments = data || [];
+
+        // collect unique doctor ids
+        const doctorIds = Array.from(new Set(appointments.map(a => a.doctor_id).filter(id => id != null))) as number[];
+
+        if (doctorIds.length === 0) {
+          this.dataSource = new MatTableDataSource(appointments);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+          this.loading = false;
+          return;
+        }
+
+        // fetch doctor objects in parallel
+        const calls = doctorIds.map(id => this.doctorService.getDoctorById(id).pipe(catchError(() => of(null))));
+        forkJoin(calls).subscribe((doctors: any[]) => {
+          const map = new Map<number, any>();
+          doctors.forEach((d: any) => { if (d && d.id) map.set(d.id, d); });
+
+          // attach doctor object to each appointment
+          const enriched = appointments.map(a => ({ ...a, doctor: map.get(a.doctor_id) }));
+
+          this.dataSource = new MatTableDataSource(enriched);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+          this.loading = false;
+        }, (err: any) => {
+          console.warn('Failed fetching doctors, using raw appointments', err);
+          this.dataSource = new MatTableDataSource(appointments);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+          this.loading = false;
+        });
       },
       error: (err) => {
         console.error('Error loading appointments', err);
@@ -97,7 +154,9 @@ export class AppointmentsComponent implements OnInit {
     const newAppointment = {
       doctor_id: formValue.doctor_id,
       appointment_date: isoDate,
-      reason: formValue.reason
+  // backend prefers `notes` field; include both for compatibility
+  notes: formValue.reason,
+  reason: formValue.reason
     };
 
     this.appointmentService.createAppointment(newAppointment).subscribe({

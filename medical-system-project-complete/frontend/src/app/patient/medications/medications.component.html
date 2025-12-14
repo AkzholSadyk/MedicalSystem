@@ -1,0 +1,133 @@
+<div class="medications-container">
+  <h2>Drugs Market / Medicaments Market</h2>
+  <p class="subtitle">Search and browse medication information</p>
+
+  <mat-card class="search-card">
+    <div class="search-row">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search Medications</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="searchQuery" 
+          placeholder="e.g., Aspirin, Paracetamol, Ibuprofen"
+          (keypress)="onSearchKeyPress($event)"
+          (input)="onSearchInput()">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="searchMedications()"
+        [disabled]="loading">
+        <mat-icon>search</mat-icon> Search
+      </button>
+    </div>
+    
+    <div class="filters-row">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter by Form</mat-label>
+        <mat-select [(ngModel)]="filterForm" (selectionChange)="applyFilters()">
+          <mat-option value="">All Forms</mat-option>
+          <mat-option *ngFor="let form of formOptions.slice(1)" [value]="form">
+            {{ form | titlecase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter by Generic Name</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="filterGenericName" 
+          placeholder="Enter generic name"
+          (keypress)="onFilterKeyPress($event)">
+        <mat-icon matSuffix>filter_list</mat-icon>
+      </mat-form-field>
+      
+      <button 
+        mat-stroked-button 
+        (click)="clearFilters()"
+        [disabled]="loading">
+        <mat-icon>clear</mat-icon> Clear Filters
+      </button>
+    </div>
+    
+    <div *ngIf="filterForm || filterGenericName || searchQuery" class="active-filters">
+      <span class="filter-label">Active Filters:</span>
+      <mat-chip *ngIf="searchQuery" class="filter-chip">
+        Search: {{ searchQuery }}
+        <mat-icon (click)="searchQuery = ''; applyFilters()" class="chip-close">close</mat-icon>
+      </mat-chip>
+      <mat-chip *ngIf="filterForm" class="filter-chip">
+        Form: {{ filterForm }}
+        <mat-icon (click)="filterForm = ''; applyFilters()" class="chip-close">close</mat-icon>
+      </mat-chip>
+      <mat-chip *ngIf="filterGenericName" class="filter-chip">
+        Generic: {{ filterGenericName }}
+        <mat-icon (click)="filterGenericName = ''; applyFilters()" class="chip-close">close</mat-icon>
+      </mat-chip>
+    </div>
+  </mat-card>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading medications...</p>
+  </div>
+
+  <div *ngIf="!loading && medications.length > 0" class="medications-grid">
+    <mat-card *ngFor="let medication of medications" class="medication-card">
+      <div class="medication-image">
+        <img 
+          [src]="getImageUrl(medication)" 
+          [alt]="(medication.name && medication.name !== 'Unknown Medication') ? medication.name : (medication.generic_name || 'Medication')"
+          (error)="onImageError($event, medication)"
+          class="med-image">
+      </div>
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="medication-icon">medication</mat-icon>
+        <mat-card-title>
+          {{ (medication.name && medication.name !== 'Unknown Medication') ? medication.name : (medication.generic_name || 'Unnamed Medication') }}
+        </mat-card-title>
+        <mat-card-subtitle *ngIf="medication.generic_name">
+          Generic: {{ medication.generic_name }}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p *ngIf="medication.form" class="form-info">
+          <mat-icon class="small-icon">inventory_2</mat-icon>
+          <strong>Form:</strong> {{ medication.form }}
+        </p>
+        <p *ngIf="medication.description" class="description">
+          {{ medication.description | slice:0:200 }}{{ medication.description.length > 200 ? '...' : '' }}
+        </p>
+        <p *ngIf="!medication.description" class="no-description">
+          No description available
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && medications.length === 0 && searchQuery" class="no-results">
+    <mat-card>
+      <mat-card-content>
+        <mat-icon class="large-icon">search_off</mat-icon>
+        <p>No medications found matching "{{ searchQuery }}"</p>
+        <p class="hint">Try searching with a different medication name (e.g., Aspirin, Ibuprofen, Paracetamol)</p>
+        <p class="hint" style="margin-top: 8px;">
+          <small>Note: If this is your first search, the system may take a moment to fetch data from openFDA API.</small>
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && medications.length === 0 && !searchQuery" class="no-results">
+    <mat-card>
+      <mat-card-content>
+        <mat-icon class="large-icon">medication</mat-icon>
+        <p>Search for medications to view information</p>
+        <p class="hint">Enter a medication name in the search box above</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

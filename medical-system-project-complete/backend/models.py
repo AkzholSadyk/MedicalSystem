@@ -333,6 +333,23 @@ class ChatMessage(Base):
     sender = relationship("User", backref="sent_chat_messages")
 
 
+class Medication(Base):
+    """
+    Medication model - stores medication data fetched from openFDA API.
+    Acts as a cache to avoid repeated API calls.
+    """
+
+    __tablename__ = "medications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False, index=True)  # Brand or product name
+    generic_name = Column(String(200), index=True)  # Generic/active ingredient name
+    description = Column(Text)  # Medication description/summary
+    form = Column(String(100))  # e.g., "tablet", "capsule", "syrup"
+    image_url = Column(String(500))  # External image URL (not stored locally)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
 # class AIChatMessage(Base):
 #             __tablename__ = "ai_chat_messages"
 #             id = Column(Integer, primary_key=True, index=True)

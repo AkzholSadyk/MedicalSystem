@@ -8,6 +8,9 @@
       <mat-option *ngFor="let l of languages" [value]="l.code">{{ l.label }}</mat-option>
     </mat-select>
   </mat-form-field>
+  <button mat-icon-button (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Switch to light' : 'Switch to dark'">
+    <mat-icon>{{ isDark ? 'dark_mode' : 'light_mode' }}</mat-icon>
+  </button>
   <span class="spacer"></span>
   <div *ngIf="currentUser" class="user-info">
     <mat-icon>person</mat-icon>

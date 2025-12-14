@@ -23,7 +23,7 @@
           <!-- Doctor Name Column -->
           <ng-container matColumnDef="doctor_name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Doctor </th>
-            <td mat-cell *matCellDef="let element"> {{element.doctor_name}} </td>
+            <td mat-cell *matCellDef="let element"> {{ getDoctorDisplayName(element) }}</td>
           </ng-container>
 
           <!-- Diagnosis Column -->
@@ -65,7 +65,7 @@
     </mat-card-header>
     <mat-card-content>
       <p><strong>Date:</strong> {{ selectedRecord.created_at | date:'medium' }}</p>
-      <p><strong>Doctor:</strong> {{ selectedRecord.doctor_name }}</p>
+  <p><strong>Doctor:</strong> {{ getDoctorDisplayName(selectedRecord!) }}</p>
       <mat-divider></mat-divider>
       <h3>Diagnosis</h3>
       <p>{{ selectedRecord.diagnosis }}</p>

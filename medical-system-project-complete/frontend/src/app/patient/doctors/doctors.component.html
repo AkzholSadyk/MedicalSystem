@@ -2,11 +2,69 @@
   <h2>Find a Doctor</h2>
 
   <mat-card class="filter-card">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Search by Name, Specialization, or Clinic</mat-label>
-      <input matInput [(ngModel)]="filterText" placeholder="e.g., Cardiology, Dr. Smith">
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+    <div class="search-row">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search by Name, Specialization, or Clinic</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="filterText" 
+          placeholder="e.g., Cardiology, Dr. Smith"
+          (keypress)="onSearchKeyPress($event)">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="applyFilters()"
+        [disabled]="loading">
+        <mat-icon>search</mat-icon> Search
+      </button>
+    </div>
+    
+    <div class="filters-row">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter by Specialization</mat-label>
+        <mat-select [(ngModel)]="filterSpecialization" (selectionChange)="applyFilters()">
+          <mat-option value="">All Specializations</mat-option>
+          <mat-option *ngFor="let spec of specializations" [value]="spec">
+            {{ spec }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter by Clinic</mat-label>
+        <mat-select [(ngModel)]="filterClinic" (selectionChange)="applyFilters()">
+          <mat-option value="">All Clinics</mat-option>
+          <mat-option *ngFor="let clinic of clinics" [value]="clinic">
+            {{ clinic }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <button 
+        mat-stroked-button 
+        (click)="clearFilters()"
+        [disabled]="loading">
+        <mat-icon>clear</mat-icon> Clear Filters
+      </button>
+    </div>
+    
+    <div *ngIf="filterText || filterSpecialization || filterClinic" class="active-filters">
+      <span class="filter-label">Active Filters:</span>
+      <mat-chip *ngIf="filterText" class="filter-chip">
+        Search: {{ filterText }}
+        <mat-icon (click)="filterText = ''; applyFilters()" class="chip-close">close</mat-icon>
+      </mat-chip>
+      <mat-chip *ngIf="filterSpecialization" class="filter-chip">
+        Specialization: {{ filterSpecialization }}
+        <mat-icon (click)="filterSpecialization = ''; applyFilters()" class="chip-close">close</mat-icon>
+      </mat-chip>
+      <mat-chip *ngIf="filterClinic" class="filter-chip">
+        Clinic: {{ filterClinic }}
+        <mat-icon (click)="filterClinic = ''; applyFilters()" class="chip-close">close</mat-icon>
+      </mat-chip>
+    </div>
   </mat-card>
 
   <div *ngIf="loading" class="loading-spinner">
@@ -14,8 +72,8 @@
     <p>Loading doctors...</p>
   </div>
 
-  <div *ngIf="!loading && filteredDoctors.length > 0" class="doctor-list">
-    <mat-card *ngFor="let doctor of filteredDoctors" class="doctor-card">
+  <div *ngIf="!loading && doctors.length > 0" class="doctor-list">
+    <mat-card *ngFor="let doctor of doctors" class="doctor-card">
       <mat-card-header>
         <mat-icon mat-card-avatar>person</mat-icon>
         <mat-card-title>{{ doctor.first_name }} {{ doctor.last_name }}</mat-card-title>
@@ -27,14 +85,14 @@
         <p><strong>Phone:</strong> {{ doctor.phone_number }}</p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-raised-button color="primary" routerLink="/patient/appointments">
+        <button mat-raised-button color="primary" [routerLink]="['/patient/appointments']" [queryParams]="{ doctor_id: doctor.id }">
           <mat-icon>event</mat-icon> Book Appointment
         </button>
       </mat-card-actions>
     </mat-card>
   </div>
 
-  <div *ngIf="!loading && filteredDoctors.length === 0" class="no-results">
+  <div *ngIf="!loading && doctors.length === 0" class="no-results">
     <mat-card>
       <mat-card-content>
         <p>No doctors found matching your search criteria.</p>

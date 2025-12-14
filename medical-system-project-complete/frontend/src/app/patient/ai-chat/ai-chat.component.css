@@ -13,7 +13,7 @@
 
 .chat-sidebar {
   width: 250px;
-  border-right: 1px solid #e0e0e0;
+  border-right: 1px solid var(--border-color);
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -29,7 +29,7 @@
 }
 
 .chat-header {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 10px;
   margin-bottom: 10px;
 }
@@ -53,9 +53,9 @@
   width: 260px;
   max-height: 320px;
   overflow-y: auto;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(2,6,23,0.06);
   padding: 8px;
   z-index: 50;
 }
@@ -66,7 +66,7 @@
 }
 
 .no-sessions {
-  color: #9e9e9e;
+  color: var(--muted-text);
   padding: 8px 0;
 }
 
@@ -99,27 +99,27 @@
 }
 
 .user-message mat-card {
-  background-color: #e8eaf6; /* Light Indigo */
-  color: #3f51b5;
+  background-color: rgba(30,136,229,0.06);
+  color: var(--accent-color);
 }
 
 .ai-message mat-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
 }
 
 .timestamp {
   display: block;
   font-size: 0.7em;
-  color: #9e9e9e;
+  color: var(--muted-text);
   text-align: right;
   margin-top: 5px;
 }
 
 .chat-input {
   padding-top: 10px;
-  border-top: 1px solid #e0e0e0;
-  background: #fff;
+  border-top: 1px solid var(--border-color);
+  background: var(--surface-color);
 }
 
 .full-width {
@@ -129,7 +129,7 @@
 .welcome-message {
   text-align: center;
   margin-top: 50px;
-  color: #9e9e9e;
+  color: var(--muted-text);
 }
 
 .welcome-message mat-icon {
@@ -142,9 +142,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #9e9e9e;
+  color: var(--muted-text);
 }
 
 .active-session {
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
 }
