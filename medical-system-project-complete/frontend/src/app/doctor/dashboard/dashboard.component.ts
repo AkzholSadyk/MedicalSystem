@@ -22,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatOptionModule } from '@angular/material/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -50,6 +51,8 @@ import { MatOptionModule } from '@angular/material/core';
     MatSelectModule,
     MatGridListModule,
     MatOptionModule
+  ,
+  TranslateModule
   ]
 })
 export class DashboardComponent implements OnInit {

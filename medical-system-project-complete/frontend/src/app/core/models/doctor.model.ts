@@ -10,6 +10,7 @@ export interface Doctor {
   phone?: string;
   clinic_name?: string;
   department_name?: string;
+  avatar_url?: string;
   // Backend includes clinics/departments arrays
   clinics?: Array<{ id?: number; name?: string }>;
   departments?: Array<{ id?: number; name?: string }>;

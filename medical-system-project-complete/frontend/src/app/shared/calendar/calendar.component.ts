@@ -34,14 +34,18 @@ export class CalendarComponent implements OnChanges {
     slotMinTime: '06:00',
     slotMaxTime: '20:00',
     height: 'auto',
-    // add class names depending on status / past
+    
     eventClassNames: (arg) => {
       const classes: string[] = [];
       const props: any = arg.event.extendedProps || {};
       const now = new Date();
       const start = arg.event.start;
   const end = arg.event.end || arg.event.start;
-  if (props.status === 'cancelled') classes.push('fc-event-cancelled');
+  // add status-based class
+  if (props.status === 'pending') classes.push('evt-pending');
+  if (props.status === 'scheduled') classes.push('evt-scheduled');
+  if (props.status === 'completed') classes.push('evt-completed');
+  if (props.status === 'cancelled') classes.push('evt-cancelled');
   if (end && end < now) classes.push('fc-event-past');
       return classes;
     },
@@ -80,8 +84,7 @@ export class CalendarComponent implements OnChanges {
   }
 }
 
-// helper: compute end ISO datetime as string
-// helper: compute end datetime in local YYYY-MM-DDTHH:mm format (no UTC shift)
+
 function addMinutesLocal(dateStr: string, timeStr: string, minutes: number) {
   try {
     const [year, month, day] = dateStr.split('-').map(n => parseInt(n, 10));

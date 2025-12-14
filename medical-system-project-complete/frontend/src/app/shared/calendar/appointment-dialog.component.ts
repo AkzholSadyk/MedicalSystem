@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { Appointment } from '../../core/models/appointment.model';
 import { AppointmentService } from '../../core/services/appointment.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -22,14 +23,15 @@ import { Router } from '@angular/router';
       <p><strong>Status:</strong> {{ appt.status }}</p>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onCancel()">Close</button>
-      <button *ngIf="canCancel" mat-stroked-button color="warn" (click)="cancel()">Cancel</button>
-      <button *ngIf="canComplete" mat-flat-button color="primary" (click)="markComplete()">Mark completed</button>
-      <button *ngIf="role === 'doctor'" mat-button (click)="viewPatient()">View Patient Profile</button>
+      <button mat-button (click)="onCancel()">{{ 'COMMON.CLOSE' | translate }}</button>
+  <button *ngIf="role === 'doctor' && appt.status === 'pending'" mat-flat-button color="primary" (click)="accept()">{{ 'COMMON.ACCEPT' | translate }}</button>
+      <button *ngIf="canCancel" mat-stroked-button color="warn" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button *ngIf="canComplete" mat-flat-button color="primary" (click)="markComplete()">{{ 'COMMON.MARK_COMPLETED' | translate }}</button>
+      <button *ngIf="role === 'doctor'" mat-button (click)="viewPatient()">{{ 'COMMON.VIEW_PATIENT' | translate }}</button>
     </mat-dialog-actions>
   `,
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, TranslateModule],
 })
 export class AppointmentDialogComponent {
   appt: Appointment;
@@ -62,10 +64,19 @@ export class AppointmentDialogComponent {
     this.apptService.updateAppointmentStatus(this.appt.id, 'completed').subscribe({ next: () => this.dialogRef.close() });
   }
 
+  accept() {
+    this.apptService.updateAppointmentStatus(this.appt.id, 'scheduled').subscribe({ next: () => this.dialogRef.close() });
+  }
+
   viewPatient() {
     if (this.appt.patient && (this.appt.patient as any).id) {
       this.dialogRef.close();
-      this.router.navigate([`/patient/${(this.appt.patient as any).id}`]);
+      // If current user is a doctor, use the doctor-scoped patient route so the doctor can view profiles
+      if (this.role === 'doctor') {
+        this.router.navigate([`/doctor/patient/${(this.appt.patient as any).id}`]);
+      } else {
+        this.router.navigate([`/patient/profile/${(this.appt.patient as any).id}`]);
+      }
     }
   }
 }

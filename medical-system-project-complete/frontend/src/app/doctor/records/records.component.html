@@ -1,42 +1,42 @@
 <div class="records-container">
-  <h2>Medical Records Management</h2>
+  <h2>{{ 'DOCTOR.MEDICAL_RECORDS_TITLE' | translate }}</h2>
 
   <mat-card class="patient-select-card">
-    <mat-card-title>Select Patient</mat-card-title>
+    <mat-card-title>{{ 'RECORDS.SELECT_PATIENT' | translate }}</mat-card-title>
     <mat-card-content>
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Patient</mat-label>
+        <mat-label>{{ 'RECORDS.PATIENT_LABEL' | translate }}</mat-label>
         <mat-select (selectionChange)="onPatientSelect($event.value)" [disabled]="loadingPatients">
           <mat-option *ngFor="let patient of patients" [value]="patient.id">
             {{ patient.first_name }} {{ patient.last_name }} ({{ patient.date_of_birth | date:'shortDate' }})
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="!selectedPatient">Please select a patient</mat-error>
+        <mat-error *ngIf="!selectedPatient">{{ 'RECORDS.PLEASE_SELECT_PATIENT' | translate }}</mat-error>
       </mat-form-field>
     </mat-card-content>
   </mat-card>
 
   <div *ngIf="selectedPatient">
     <mat-card class="patient-details-card">
-      <mat-card-title>Patient Details</mat-card-title>
+      <mat-card-title>{{ 'RECORDS.PATIENT_DETAILS' | translate }}</mat-card-title>
       <mat-card-content>
-        <p><strong>Name:</strong>
+        <p><strong>{{ 'COMMON.NAME' | translate }}:</strong>
           {{ selectedPatient.first_name ? (selectedPatient.first_name + ' ' + (selectedPatient.last_name || '')) : selectedPatient.full_name }}
           <span *ngIf="selectedPatient.patronymic"> ({{ selectedPatient.patronymic }})</span>
         </p>
-        <p *ngIf="selectedPatient.date_of_birth"><strong>DOB:</strong> {{ selectedPatient.date_of_birth | date:'longDate' }}</p>
-        <p *ngIf="selectedPatient.city"><strong>City:</strong> {{ selectedPatient.city }}</p>
-        <p *ngIf="selectedPatient.phone"><strong>Phone:</strong> {{ selectedPatient.phone }}</p>
+        <p *ngIf="selectedPatient.date_of_birth"><strong>{{ 'COMMON.DATE' | translate }}:</strong> {{ selectedPatient.date_of_birth | date:'longDate' }}</p>
+        <p *ngIf="selectedPatient.city"><strong>{{ 'RECORDS.CITY' | translate }}:</strong> {{ selectedPatient.city }}</p>
+        <p *ngIf="selectedPatient.phone"><strong>{{ 'COMMON.PHONE' | translate }}:</strong> {{ selectedPatient.phone }}</p>
       </mat-card-content>
     </mat-card>
     <mat-card class="create-record-card">
-      <mat-card-title>Create New Record for {{ selectedPatient.first_name }} {{ selectedPatient.last_name }}</mat-card-title>
+      <mat-card-title>{{ 'RECORDS.CREATE_NEW_RECORD_FOR' | translate:{ name: (selectedPatient.first_name + ' ' + selectedPatient.last_name) } }}</mat-card-title>
       <mat-card-content>
         <form [formGroup]="recordForm" (ngSubmit)="createRecord()" class="record-form">
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Diagnosis</mat-label>
+            <mat-label>{{ 'RECORDS.DIAGNOSIS_LABEL' | translate }}</mat-label>
             <textarea matInput formControlName="diagnosis" required rows="3"></textarea>
-            <mat-error *ngIf="recordForm.get('diagnosis')?.hasError('required')">Diagnosis is required</mat-error>
+            <mat-error *ngIf="recordForm.get('diagnosis')?.hasError('required')">{{ 'RECORDS.ERROR_DIAGNOSIS_REQUIRED' | translate }}</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
@@ -46,26 +46,26 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Notes</mat-label>
+            <mat-label>{{ 'RECORDS.NOTES_LABEL' | translate }}</mat-label>
             <textarea matInput formControlName="notes" rows="3"></textarea>
           </mat-form-field>
 
           <button mat-raised-button color="primary" type="submit" [disabled]="recordForm.invalid">
-            Create Medical Record
+            {{ 'RECORDS.CREATE_MEDICAL_RECORD' | translate }}
           </button>
         </form>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="history-card">
-      <mat-card-title>Record History for {{ selectedPatient.full_name }}</mat-card-title>
+  <mat-card-title>{{ 'RECORDS.RECORD_HISTORY_FOR' | translate:{ name: selectedPatient.full_name } }}</mat-card-title>
       <mat-card-content>
         <div *ngIf="loadingRecords">
           <mat-spinner></mat-spinner>
-          <p>Loading records...</p>
+          <p>{{ 'COMMON.LOADING' | translate }}</p>
         </div>
   <div *ngIf="!loadingRecords && (patientRecords.length === 0)">
-          <p>No previous medical records found for this patient.</p>
+          <p>{{ 'RECORDS.NO_PREVIOUS_RECORDS' | translate }}</p>
         </div>
   <mat-accordion *ngIf="!loadingRecords && (patientRecords.length > 0)">
           <mat-expansion-panel *ngFor="let record of patientRecords">

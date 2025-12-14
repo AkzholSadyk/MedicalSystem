@@ -75,6 +75,19 @@ export class AuthService {
               this.currentUserSubject.next(user);
             }
           });
+        } else if (user && user.role === 'patient') {
+          // Fetch patient profile and merge so avatar_url and other fields are persisted
+          this.http.get<any>(`${this.apiUrl}/patients/me`).subscribe({
+            next: (patientProfile) => {
+              const merged = { ...user, ...patientProfile };
+              localStorage.setItem('user', JSON.stringify(merged));
+              this.currentUserSubject.next(merged as User);
+            },
+            error: () => {
+              localStorage.setItem('user', JSON.stringify(user));
+              this.currentUserSubject.next(user);
+            }
+          });
         } else {
           localStorage.setItem('user', JSON.stringify(user));
           this.currentUserSubject.next(user);
@@ -105,6 +118,20 @@ export class AuthService {
 
     return this.http.patch<any>(`${this.apiUrl}/${endpoint}/me`, payload).pipe(
       tap(() => this.fetchCurrentUser().subscribe())
+    );
+  }
+
+  uploadProfileAvatar(file: File): Observable<any> {
+    const user = this.currentUserValue || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null);
+    const role = user?.role || 'patient';
+    const endpoint = role === 'doctor' ? 'doctors' : 'patients';
+    const form = new FormData();
+    form.append('file', file, file.name);
+    return this.http.post<any>(`${this.apiUrl}/${endpoint}/me/avatar`, form).pipe(
+      tap(() => {
+        // Refresh current user so avatar_url is saved into localStorage and BehaviorSubject
+        this.fetchCurrentUser().subscribe({ next: () => {}, error: () => {} });
+      })
     );
   }
 

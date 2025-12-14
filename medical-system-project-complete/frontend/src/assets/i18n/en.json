@@ -43,4 +43,135 @@
     "SAVE": "Save",
     "CANCEL": "Cancel"
   }
+  ,
+  "COMMON": {
+    "FILTER": "Filter",
+    "NAME": "Name",
+    "DATE_OF_BIRTH": "Date of Birth",
+    "PHONE": "Phone",
+  "ACTIONS": "Actions",
+  "CLOSE": "Close",
+  "ACCEPT": "Accept",
+  "MARK_COMPLETED": "Mark completed",
+  "VIEW_PATIENT": "View Patient Profile",
+  "DOCTOR": "Doctor",
+  "DATE": "Date",
+  "STATUS": "Status",
+  "REASON": "Reason",
+  "LOADING": "Loading...",
+  "SEARCH": "Search",
+  "CLEAR_FILTERS": "Clear Filters",
+  "ACTIVE_FILTERS": "Active Filters"
+  },
+  "PAGINATOR": {
+    "ITEMS_PER_PAGE": "Items per page:",
+    "NEXT_PAGE": "Next page",
+    "PREVIOUS_PAGE": "Previous page",
+    "RANGE": "{{start}} - {{end}} of {{length}}"
+  },
+  "DOCTOR": {
+    "PATIENT_LIST": "Patient List",
+    "SEARCH_PATIENTS": "Search patients",
+    "NO_PATIENTS_FILTER": "No patients matching the filter \"{{value}}\""
+  }
+  ,
+  "PATIENT": {
+    "MY_APPOINTMENTS": "My Appointments",
+    "SCHEDULE_NEW": "Schedule New Appointment",
+    "APPOINTMENT_DATE": "Appointment Date",
+    "TIME": "Time (HH:MM)",
+    "DURATION_MINUTES": "Duration (minutes)",
+    "CONFIRM_APPOINTMENT": "Confirm Appointment",
+    "SCHEDULED_APPOINTMENTS": "Scheduled Appointments",
+    "SEARCH_APPOINTMENTS": "Search appointments",
+    "NO_APPOINTMENTS_FILTER": "No appointments matching the filter \"{{value}}\"",
+    "ERROR_DOCTOR_REQUIRED": "Doctor is required",
+    "ERROR_DATE_REQUIRED": "Date is required",
+    "ERROR_TIME_REQUIRED": "Time is required",
+    "ERROR_REASON_REQUIRED": "Reason is required"
+  }
+ ,
+  "MY_MEDICAL_RECORDS": "My Medical Records",
+  "RECORD_HISTORY": "Record History",
+  "SEARCH_RECORDS": "Search records",
+  "NO_RECORDS_FILTER": "No medical records matching the filter \"{{value}}\"",
+  "RECORD_DETAILS": "Record Details",
+  "DIAGNOSIS": "Diagnosis",
+  "TREATMENT": "Treatment",
+  "NOTES": "Notes"
+  ,
+  "RECORDS": {
+    "RECORD_HISTORY_FOR": "Record History for {{name}}",
+    "SELECT_PATIENT": "Select Patient",
+    "PATIENT_LABEL": "Patient",
+    "PLEASE_SELECT_PATIENT": "Please select a patient",
+    "PATIENT_DETAILS": "Patient Details",
+    "CREATE_NEW_RECORD_FOR": "Create New Record for {{name}}",
+    "DIAGNOSIS_LABEL": "Diagnosis",
+    "ERROR_DIAGNOSIS_REQUIRED": "Diagnosis is required",
+    "NOTES_LABEL": "Notes",
+    "CREATE_MEDICAL_RECORD": "Create Medical Record",
+    "NO_PREVIOUS_RECORDS": "No previous medical records found for this patient.",
+    "CREATE_SUCCESS": "Medical record created successfully!"
+  }
+,
+  "ERRORS": {
+    "CREATE_RECORD_FAILED": "Error creating record: {{details}}",
+    "DOCTOR_ID_MISSING": "Doctor id missing; cannot create record.",
+    "UNABLE_DETERMINE_DOCTOR": "Unable to determine doctor id. See console for details."
+  }
+ 
+  ,
+  "MEDICATIONS": {
+    "TITLE": "Drugs Market / Medicaments Market",
+    "SUBTITLE": "Search and browse medication information",
+    "SEARCH_LABEL": "Search Medications",
+    "SEARCH_PLACEHOLDER": "e.g., Aspirin, Paracetamol, Ibuprofen",
+    "FILTER_BY_FORM": "Filter by Form",
+    "ALL_FORMS": "All Forms",
+    "FILTER_BY_GENERIC": "Filter by Generic Name",
+    "FILTER_GENERIC_PLACEHOLDER": "Enter generic name",
+    "LOADING": "Loading medications...",
+    "UNNAMED": "Unnamed Medication",
+    "GENERIC_LABEL": "Generic:",
+    "FORM_LABEL": "Form",
+    "NO_DESCRIPTION": "No description available",
+    "NO_RESULTS": "No medications found matching \"{{value}}\"",
+    "TRY_EXAMPLES": "Try searching with a different medication name (e.g., Aspirin, Ibuprofen, Paracetamol)",
+    "FIRST_SEARCH_NOTE": "Note: If this is your first search, the system may take a moment to fetch data from openFDA API.",
+    "SEARCH_PROMPT": "Search for medications to view information",
+    "SEARCH_HINT": "Enter a medication name in the search box above",
+    "FORM_PREFIX": "Form",
+    "GENERIC_PREFIX": "Generic"
+  },
+  "DOCTORS": {
+    "TITLE": "Find a Doctor",
+    "SEARCH_LABEL": "Search by Name, Specialization, or Clinic",
+    "SEARCH_PLACEHOLDER": "e.g., Cardiology, Dr. Smith",
+    "FILTER_BY_SPECIALIZATION": "Filter by Specialization",
+    "ALL_SPECIALIZATIONS": "All Specializations",
+    "FILTER_BY_CLINIC": "Filter by Clinic",
+    "ALL_CLINICS": "All Clinics",
+    "SPECIALIZATION_PREFIX": "Specialization",
+    "CLINIC_PREFIX": "Clinic",
+    "LOADING": "Loading doctors...",
+    "CLINIC_LABEL": "Clinic",
+    "DEPARTMENT_LABEL": "Department",
+    "PHONE_LABEL": "Phone",
+    "BOOK_APPOINTMENT": "Book Appointment",
+    "NO_RESULTS": "No doctors found matching your search criteria."
+  }
+  ,
+  "CALENDAR": {
+    "PATIENT_TITLE": "Patient Calendar",
+    "DOCTOR_TITLE": "Doctor Calendar"
+  },
+  "AI_CHAT": {
+  "TITLE": "AI Medical Assistant",
+  "NO_PAST_SESSIONS": "No past sessions",
+  "WELCOME": "Start a new conversation with your AI Medical Assistant.",
+  "TYPING": "AI is typing...",
+  "INPUT_PLACEHOLDER": "Ask your medical question...",
+  "NEW_CHAT": "New chat"
+  }
 }

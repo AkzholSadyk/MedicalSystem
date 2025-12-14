@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MedicationService } from '../../core/services/medication.service';
+import { TranslateService } from '@ngx-translate/core';
 import { Medication } from '../../core/models/medication.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-medications',
@@ -30,6 +32,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatSelectModule,
     MatOptionModule,
     MatChipsModule
+  ,
+  TranslateModule
   ]
 })
 export class MedicationsComponent implements OnInit {
@@ -47,7 +51,7 @@ export class MedicationsComponent implements OnInit {
   
   allMedications: Medication[] = []; 
 
-  constructor(private medicationService: MedicationService) { }
+  constructor(private medicationService: MedicationService, private translate: TranslateService) { }
 
   ngOnInit(): void {
   
@@ -92,11 +96,11 @@ export class MedicationsComponent implements OnInit {
         console.error('Error loading medications', err);
         this.loading = false;
         if (err.status === 0) {
-          alert('Unable to connect to server. Please check your connection.');
+          alert(this.translate.instant('ERRORS.NETWORK'));
         } else if (err.status === 401) {
-          alert('Please login again.');
+          alert(this.translate.instant('ERRORS.UNAUTHORIZED'));
         } else {
-          alert('Error loading medications. Please try again.');
+          alert(this.translate.instant('MEDICATIONS.ERROR_LOADING'));
         }
       }
     });

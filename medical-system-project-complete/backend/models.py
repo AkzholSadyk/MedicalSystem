@@ -1,3 +1,4 @@
+from database import Base
 from sqlalchemy import (
     Boolean,
     Column,
@@ -11,8 +12,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-
-from database import Base
 
 
 class User(Base):
@@ -58,6 +57,7 @@ class Patient(Base):
     patronymic = Column(String(100))
     city = Column(String(100))
     phone = Column(String(20))
+    avatar_url = Column(String(500))
     date_of_birth = Column(Date)
     address = Column(Text)
     blood_type = Column(String(5))
@@ -89,6 +89,7 @@ class Doctor(Base):
     city = Column(String(100))
     specialization = Column(String(100), index=True)
     phone = Column(String(20))
+    avatar_url = Column(String(500))
     license_number = Column(String(50))
     years_of_experience = Column(Integer)
     education = Column(Text)

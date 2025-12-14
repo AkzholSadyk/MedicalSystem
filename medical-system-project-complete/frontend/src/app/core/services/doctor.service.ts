@@ -37,4 +37,9 @@ export class DoctorService {
   getDoctorById(id: number): Observable<Doctor> {
     return this.http.get<Doctor>(`${this.apiUrl}/doctors/${id}`);
   }
+
+  // Public profile used by patients to view doctor info (returns only public fields)
+  getPublicProfile(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/doctors/${id}`);
+  }
 }

@@ -8,6 +8,7 @@ import { PatientService } from '../../core/services/patient.service';
 import { Patient } from '../../core/models/patient.model';
 import { MedicalRecord } from '../../core/models/record.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 
 
@@ -30,6 +31,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatOptionModule } from '@angular/material/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-records',
@@ -58,6 +60,8 @@ import { MatOptionModule } from '@angular/material/core';
       MatSelectModule,
       MatGridListModule,
       MatOptionModule
+  ,
+  TranslateModule
     ]
 })
 export class RecordsComponent implements OnInit {
@@ -74,8 +78,9 @@ export class RecordsComponent implements OnInit {
   constructor(
     private patientService: PatientService,
     private recordService: RecordService,
-  private authService: AuthService,
-    private fb: FormBuilder
+    private authService: AuthService,
+    private fb: FormBuilder,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -155,7 +160,7 @@ export class RecordsComponent implements OnInit {
     const doCreate = (payload: any) => {
       this.recordService.createRecord(payload).subscribe({
         next: () => {
-          alert('Medical record created successfully!');
+          alert(this.translate.instant('RECORDS.CREATE_SUCCESS'));
           this.recordForm.reset({ patient_id: this.selectedPatient?.id });
           this.loadPatientRecords(this.selectedPatient!.id);
         },
@@ -164,9 +169,9 @@ export class RecordsComponent implements OnInit {
           // Show backend validation errors when available
           const details = err?.error || err?.message || 'Unknown error';
           try {
-            alert('Error creating record: ' + JSON.stringify(details));
+            alert(this.translate.instant('ERRORS.CREATE_RECORD_FAILED', { details: JSON.stringify(details) }));
           } catch (e) {
-            alert('Error creating record. See console for details.');
+            alert(this.translate.instant('ERRORS.CREATE_RECORD_FAILED', { details: 'Unknown error' }));
           }
         }
       });
@@ -184,12 +189,12 @@ export class RecordsComponent implements OnInit {
             }
             doCreate(newRecord);
           } else {
-            alert('Doctor id missing; cannot create record.');
+            alert(this.translate.instant('ERRORS.DOCTOR_ID_MISSING'));
           }
         },
         error: (err) => {
           console.error('Error fetching profile before create', err);
-          alert('Unable to determine doctor id. See console for details.');
+          alert(this.translate.instant('ERRORS.UNABLE_DETERMINE_DOCTOR'));
         }
       });
     } else {

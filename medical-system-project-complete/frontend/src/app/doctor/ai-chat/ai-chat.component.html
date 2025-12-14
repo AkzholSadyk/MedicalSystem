@@ -1,5 +1,5 @@
 <div class="chat-container">
-  <h2>AI Medical Assistant</h2>
+  <h2>{{ 'AI_CHAT.TITLE' | translate }}</h2>
 
   <mat-card class="chat-card">
   <!-- compact sidebar removed - replaced with header History button -->
@@ -13,7 +13,7 @@
           <button mat-icon-button aria-label="History" (click)="toggleHistory()">
             <mat-icon>history</mat-icon>
           </button>
-          <button mat-mini-fab color="primary" aria-label="New chat" (click)="startNewChat()">
+          <button mat-mini-fab color="primary" [attr.aria-label]="('AI_CHAT.NEW_CHAT' | translate)" (click)="startNewChat()">
             <mat-icon>add</mat-icon>
           </button>
         </div>
@@ -29,15 +29,15 @@
         </mat-nav-list>
         <div *ngIf="loadingSessions" class="loading-sessions">
           <mat-spinner [diameter]="20"></mat-spinner>
-          <p>Loading...</p>
+          <p>{{ 'COMMON.LOADING' | translate }}</p>
         </div>
-        <div *ngIf="!loadingSessions && sessions.length === 0" class="no-sessions">No past sessions</div>
+        <div *ngIf="!loadingSessions && sessions.length === 0" class="no-sessions">{{ 'AI_CHAT.NO_PAST_SESSIONS' | translate }}</div>
       </div>
 
   <div class="chat-messages" #messagesContainer>
         <div *ngIf="!currentSession" class="welcome-message">
           <mat-icon>smart_toy</mat-icon>
-          <p>Start a new conversation with your AI Medical Assistant.</p>
+          <p>{{ 'AI_CHAT.WELCOME' | translate }}</p>
         </div>
 
         <div *ngFor="let message of currentSession?.messages" class="message-bubble" [class.user-message]="message.role === 'user'" [class.ai-message]="message.role === 'ai'">
@@ -51,14 +51,14 @@
 
         <div *ngIf="loadingChat" class="loading-message">
           <!-- <mat-spinner [diameter]="20"></mat-spinner> -->
-          <p>AI is typing...</p>
+          <p>{{ 'AI_CHAT.TYPING' | translate }}</p>
         </div>
       </div>
 
       <div class="chat-input">
         <form [formGroup]="chatForm" (ngSubmit)="sendMessage()">
           <mat-form-field appearance="outline" class="full-width">
-              <input #messageInput matInput formControlName="message" placeholder="Ask your medical question..." required (keydown)="onEnter($event)">
+              <input #messageInput matInput formControlName="message" placeholder="{{ 'AI_CHAT.INPUT_PLACEHOLDER' | translate }}" required (keydown)="onEnter($event)">
             <button mat-icon-button matSuffix color="primary" type="submit" [disabled]="chatForm.invalid || loadingChat">
               <mat-icon>send</mat-icon>
             </button>

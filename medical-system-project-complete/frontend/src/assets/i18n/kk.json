@@ -43,4 +43,113 @@
     "SAVE": "Сақтау",
     "CANCEL": "Болдырмау"
   }
+  ,
+  "COMMON": {
+  "FILTER": "Фильтр",
+  "NAME": "Аты",
+  "DATE_OF_BIRTH": "Туған күні",
+  "PHONE": "Телефон",
+  "ACTIONS": "Әрекеттер",
+  "LOADING": "Жүктелуде...",
+  "SEARCH": "Іздеу",
+  "CLEAR_FILTERS": "Сүзгілерді тазалау",
+  "ACTIVE_FILTERS": "Белсенді сүзгілер"
+  },
+  "DOCTOR": {
+    "PATIENT_LIST": "Пациенттер тізімі",
+    "SEARCH_PATIENTS": "Пациенттерді іздеу",
+    "NO_PATIENTS_FILTER": "Фильтрге сәйкес келетін пациенттер жоқ \"{{value}}\""
+  }
+
+  ,
+  "PATIENT": {
+    "MY_APPOINTMENTS": "Менің жазылымдарым",
+    "SCHEDULE_NEW": "Жаңа жазылым жасау",
+    "APPOINTMENT_DATE": "Кездесу күні",
+    "TIME": "Уақыт (HH:MM)",
+    "DURATION_MINUTES": "Ұзақтығы (минуттар)",
+    "CONFIRM_APPOINTMENT": "Кездесуді растау",
+    "SCHEDULED_APPOINTMENTS": "Жоспарланған жазылымдар",
+    "SEARCH_APPOINTMENTS": "Жазылымдарды іздеу",
+    "NO_APPOINTMENTS_FILTER": "Фильтрге сәйкес келетін жазылымдар жоқ \"{{value}}\"",
+    "ERROR_DOCTOR_REQUIRED": "Дәрігер міндетті",
+    "ERROR_DATE_REQUIRED": "Күні міндетті",
+    "ERROR_TIME_REQUIRED": "Уақыт міндетті",
+    "ERROR_REASON_REQUIRED": "Себеп міндетті"
+  }
+ ,
+  "MY_MEDICAL_RECORDS": "Менің медициналық жазбаларым",
+  "RECORD_HISTORY": "Жазбалар тарихы",
+  "SEARCH_RECORDS": "Жазбаларды іздеу",
+  "NO_RECORDS_FILTER": "Фильтрге сәйкес келетін медициналық жазбалар жоқ \"{{value}}\"",
+  "RECORD_DETAILS": "Жазба туралы мәлімет",
+  "DIAGNOSIS": "Диагноз",
+  "TREATMENT": "Емдеу",
+  "NOTES": "Ескертпелер"
+  ,
+  "RECORDS": {
+    "RECORD_HISTORY_FOR": "{{name}} үшін жазбалар тарихы"
+  }
+  ,
+  "ERRORS": {
+    "CREATE_RECORD_FAILED": "Жазба жасау қатесі: {{details}}",
+    "DOCTOR_ID_MISSING": "Дәрігер id жоқ; жазба жасау мүмкін емес.",
+    "UNABLE_DETERMINE_DOCTOR": "Дәрігер id анықталмады. Толығырақ консольді қараңыз."
+  }
+  ,
+  "MEDICATIONS": {
+    "TITLE": "Дәрі-дәрмек нарығы",
+    "SUBTITLE": "Дәрі-дәрмек туралы ақпаратты іздеу және қарау",
+    "SEARCH_LABEL": "Дәрілерді іздеу",
+    "SEARCH_PLACEHOLDER": "мысалы, Аспирин, Парацетамол, Ибупрофен",
+    "FILTER_BY_FORM": "Формасына қарай сүзу",
+    "ALL_FORMS": "Барлық формалар",
+    "FILTER_BY_GENERIC": "Халықаралық атауына қарай сүзу",
+    "FILTER_GENERIC_PLACEHOLDER": "Халықаралық атауын енгізіңіз",
+    "LOADING": "Дәрілер жүктелуде...",
+    "UNNAMED": "Аты жоқ дәрі",
+    "GENERIC_LABEL": "Халықаралық атауы:",
+    "FORM_LABEL": "Форма",
+    "NO_DESCRIPTION": "Сипаттама жоқ",
+    "NO_RESULTS": "\"{{value}}\" бойынша дәрілер табылмады",
+    "TRY_EXAMPLES": "Басқа дәрі атауын іздеуді қолданып көріңіз (мысалы, Аспирин, Ибупрофен, Парацетамол)",
+    "FIRST_SEARCH_NOTE": "Ескерту: егер бұл бірінші іздеу болса, жүйеге openFDA API-дан деректер алу үшін біраз уақыт қажет болуы мүмкін.",
+    "SEARCH_PROMPT": "Ақпаратты көру үшін дәрілерді іздеңіз",
+    "SEARCH_HINT": "Жоғарыдағы іздеу өрісіне дәрі атауын енгізіңіз",
+    "FORM_PREFIX": "Форма",
+    "GENERIC_PREFIX": "Халықар. атауы"
+  },
+  "DOCTORS": {
+    "TITLE": "Дәрігер табу",
+    "SEARCH_LABEL": "Аты, мамандығы немесе клиника бойынша іздеу",
+    "SEARCH_PLACEHOLDER": "мысалы, Кардиология, Dr. Smith",
+    "FILTER_BY_SPECIALIZATION": "Мамандандыру бойынша сүзу",
+    "ALL_SPECIALIZATIONS": "Барлық мамандықтар",
+    "FILTER_BY_CLINIC": "Клиника бойынша сүзу",
+    "ALL_CLINICS": "Барлық клиникалар",
+    "SPECIALIZATION_PREFIX": "Мамандандыру",
+    "CLINIC_PREFIX": "Клиника",
+    "LOADING": "Дәрігерлер жүктелуде...",
+    "CLINIC_LABEL": "Клиника",
+    "DEPARTMENT_LABEL": "Бөлім",
+    "PHONE_LABEL": "Телефон",
+    "BOOK_APPOINTMENT": "Кездесу брондау"
+  },
+  "CALENDAR": {
+    "PATIENT_TITLE": "Пациент күнтізбесі",
+    "DOCTOR_TITLE": "Дәрігер күнтізбесі"
+  },
+  "AI_CHAT": {
+    "TITLE": "AI Медицина көмекшісі",
+    "NO_PAST_SESSIONS": "Өткен сессиялар жоқ",
+    "WELCOME": "AI медициналық көмекшіңізбен жаңа әңгіме бастаңыз.",
+    "TYPING": "AI жауап жазып жатыр...",
+    "INPUT_PLACEHOLDER": "Медициналық сұрағыңызды қойыңыз..."
+  },
+  "PAGINATOR": {
+    "ITEMS_PER_PAGE": "Беттегі элементтер:",
+    "NEXT_PAGE": "Келесі бет",
+    "PREVIOUS_PAGE": "Алдыңғы бет",
+    "RANGE": "{{start}} - {{end}} барлығы {{length}}"
+  }
 }

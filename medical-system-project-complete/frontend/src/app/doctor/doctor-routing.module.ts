@@ -8,6 +8,7 @@ import { PatientsComponent } from './patients/patients.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
 import { RecordsComponent } from './records/records.component';
 import { AiChatComponent } from './ai-chat/ai-chat.component';
+import { PatientProfileComponent } from '../patient/patient-profile.component';
 
 
 
@@ -18,6 +19,7 @@ const routes: Routes = [
     children: [
   { path: 'dashboard', component: DoctorCalendarComponent },
       { path: 'patients', component: PatientsComponent },
+  { path: 'patient/:id', component: PatientProfileComponent },
       { path: 'appointments', component: AppointmentsComponent },
       { path: 'records', component: RecordsComponent },
       { path: 'ai-chat', component: AiChatComponent },

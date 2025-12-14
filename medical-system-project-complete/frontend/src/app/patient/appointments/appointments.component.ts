@@ -43,7 +43,9 @@ export class AppointmentsComponent implements OnInit {
     this.appointmentForm = this.fb.group({
       doctor_id: ['', Validators.required],
       appointment_date: ['', Validators.required],
-      reason: ['', Validators.required]
+  appointment_time: ['', Validators.required],
+  duration: [30],
+  reason: ['', Validators.required]
     });
 
     // If navigated with a doctor_id query param (from doctors list), open create form and preselect
@@ -81,6 +83,18 @@ export class AppointmentsComponent implements OnInit {
 
         if (doctorIds.length === 0) {
           this.dataSource = new MatTableDataSource(appointments);
+          this.dataSource.sortingDataAccessor = (item: any, property: string) => {
+            switch (property) {
+              case 'doctor_name':
+                return (item.doctor_name || (item.doctor ? `${item.doctor.first_name || ''} ${item.doctor.last_name || ''}` : '')).toLowerCase();
+              case 'appointment_date':
+                try { return new Date((item.appointment_date || '') + 'T' + (item.appointment_time || '00:00')).getTime(); } catch (e) { return 0; }
+              case 'status':
+                return (item.status || '').toLowerCase();
+              default:
+                return item[property];
+            }
+          };
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           this.loading = false;
@@ -97,12 +111,36 @@ export class AppointmentsComponent implements OnInit {
           const enriched = appointments.map(a => ({ ...a, doctor: map.get(a.doctor_id) }));
 
           this.dataSource = new MatTableDataSource(enriched);
+          this.dataSource.sortingDataAccessor = (item: any, property: string) => {
+            switch (property) {
+              case 'doctor_name':
+                return (item.doctor_name || (item.doctor ? `${item.doctor.first_name || ''} ${item.doctor.last_name || ''}` : '')).toLowerCase();
+              case 'appointment_date':
+                try { return new Date((item.appointment_date || '') + 'T' + (item.appointment_time || '00:00')).getTime(); } catch (e) { return 0; }
+              case 'status':
+                return (item.status || '').toLowerCase();
+              default:
+                return item[property];
+            }
+          };
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           this.loading = false;
         }, (err: any) => {
           console.warn('Failed fetching doctors, using raw appointments', err);
           this.dataSource = new MatTableDataSource(appointments);
+          this.dataSource.sortingDataAccessor = (item: any, property: string) => {
+            switch (property) {
+              case 'doctor_name':
+                return (item.doctor_name || (item.doctor ? `${item.doctor.first_name || ''} ${item.doctor.last_name || ''}` : '')).toLowerCase();
+              case 'appointment_date':
+                try { return new Date((item.appointment_date || '') + 'T' + (item.appointment_time || '00:00')).getTime(); } catch (e) { return 0; }
+              case 'status':
+                return (item.status || '').toLowerCase();
+              default:
+                return item[property];
+            }
+          };
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           this.loading = false;
@@ -153,7 +191,9 @@ export class AppointmentsComponent implements OnInit {
 
     const newAppointment = {
       doctor_id: formValue.doctor_id,
-      appointment_date: isoDate,
+  appointment_date: isoDate,
+  appointment_time: formValue.appointment_time,
+  duration: formValue.duration,
   // backend prefers `notes` field; include both for compatibility
   notes: formValue.reason,
   reason: formValue.reason

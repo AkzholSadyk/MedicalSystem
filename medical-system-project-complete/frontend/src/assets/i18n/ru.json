@@ -43,4 +43,126 @@
     "SAVE": "Сохранить",
     "CANCEL": "Отмена"
   }
+  ,
+  "COMMON": {
+  "FILTER": "Фильтр",
+  "NAME": "Имя",
+  "DATE_OF_BIRTH": "Дата рождения",
+  "PHONE": "Телефон",
+  "ACTIONS": "Действия",
+  "LOADING": "Загрузка...",
+  "SEARCH": "Поиск",
+  "CLEAR_FILTERS": "Очистить фильтры",
+  "ACTIVE_FILTERS": "Активные фильтры"
+  },
+  "DOCTOR": {
+    "PATIENT_LIST": "Список пациентов",
+    "SEARCH_PATIENTS": "Поиск пациентов",
+    "NO_PATIENTS_FILTER": "Нет пациентов, соответствующих фильтру \"{{value}}\""
+  }
+  ,
+  "PATIENT": {
+    "MY_APPOINTMENTS": "Мои записи",
+    "SCHEDULE_NEW": "Записаться на приём",
+    "APPOINTMENT_DATE": "Дата приёма",
+    "TIME": "Время (ЧЧ:ММ)",
+    "DURATION_MINUTES": "Длительность (минут)",
+    "CONFIRM_APPOINTMENT": "Подтвердить запись",
+    "SCHEDULED_APPOINTMENTS": "Запланированные записи",
+    "SEARCH_APPOINTMENTS": "Поиск записей",
+    "NO_APPOINTMENTS_FILTER": "Нет записей, соответствующих фильтру \"{{value}}\"",
+    "ERROR_DOCTOR_REQUIRED": "Врач обязателен",
+    "ERROR_DATE_REQUIRED": "Дата обязательна",
+    "ERROR_TIME_REQUIRED": "Время обязательно",
+    "ERROR_REASON_REQUIRED": "Причина обязательна"
+  }
+ ,
+  "MY_MEDICAL_RECORDS": "Мои медицинские записи",
+  "RECORD_HISTORY": "История записей",
+  "SEARCH_RECORDS": "Поиск записей",
+  "NO_RECORDS_FILTER": "Нет медицинских записей, соответствующих фильтру \"{{value}}\"",
+  "RECORD_DETAILS": "Детали записи",
+  "DIAGNOSIS": "Диагноз",
+  "TREATMENT": "Лечение",
+  "NOTES": "Заметки"
+  ,
+  "RECORDS": {
+    "RECORD_HISTORY_FOR": "История записей для {{name}}",
+    "SELECT_PATIENT": "Выберите пациента",
+    "PATIENT_LABEL": "Пациент",
+    "PLEASE_SELECT_PATIENT": "Пожалуйста, выберите пациента",
+    "PATIENT_DETAILS": "Детали пациента",
+    "CREATE_NEW_RECORD_FOR": "Создать новую запись для {{name}}",
+    "DIAGNOSIS_LABEL": "Диагноз",
+    "ERROR_DIAGNOSIS_REQUIRED": "Диагноз обязателен",
+    "NOTES_LABEL": "Заметки",
+    "CREATE_MEDICAL_RECORD": "Создать медицинскую запись",
+    "NO_PREVIOUS_RECORDS": "Предыдущие медицинские записи для этого пациента не найдены.",
+    "CREATE_SUCCESS": "Медицинская запись успешно создана!"
+  },
+  "ERRORS": {
+    "CREATE_RECORD_FAILED": "Ошибка при создании записи: {{details}}",
+    "DOCTOR_ID_MISSING": "Отсутствует id врача; невозможно создать запись.",
+    "UNABLE_DETERMINE_DOCTOR": "Не удалось определить id врача. См. консоль для деталей.",
+    "NETWORK": "Невозможно подключиться к серверу. Пожалуйста, проверьте подключение.",
+    "UNAUTHORIZED": "Пожалуйста, войдите в систему снова."
+  },
+  "MEDICATIONS": {
+    "TITLE": "Аптека лекарств",
+    "SUBTITLE": "Поиск и просмотр информации о лекарствах",
+    "SEARCH_LABEL": "Поиск лекарств",
+    "SEARCH_PLACEHOLDER": "например, Аспирин, Парацетамол, Ибупрофен",
+    "FILTER_BY_FORM": "Фильтр по форме",
+    "ALL_FORMS": "Все формы",
+    "FILTER_BY_GENERIC": "Фильтр по международному названию",
+    "FILTER_GENERIC_PLACEHOLDER": "Введите международное название",
+    "LOADING": "Загрузка лекарств...",
+    "UNNAMED": "Безымянное лекарство",
+    "GENERIC_LABEL": "Международное название:",
+    "FORM_LABEL": "Форма",
+    "NO_DESCRIPTION": "Описание отсутствует",
+    "NO_RESULTS": "Нет лекарств, соответствующих \"{{value}}\"",
+    "TRY_EXAMPLES": "Попробуйте поискать другим названием лекарства (например, Аспирин, Ибупрофен, Парацетамол)",
+    "FIRST_SEARCH_NOTE": "Примечание: при первом поиске система может занять немного времени для получения данных из openFDA API.",
+    "SEARCH_PROMPT": "Ищите лекарства, чтобы просмотреть информацию",
+    "SEARCH_HINT": "Введите название лекарства в поле поиска выше",
+    "FORM_PREFIX": "Форма",
+    "GENERIC_PREFIX": "Межд. название"
+  },
+  "DOCTORS": {
+    "TITLE": "Найти врача",
+    "SEARCH_LABEL": "Поиск по имени, специализации или клинике",
+    "SEARCH_PLACEHOLDER": "например, Кардиология, Dr. Smith",
+    "FILTER_BY_SPECIALIZATION": "Фильтр по специализации",
+    "ALL_SPECIALIZATIONS": "Все специализации",
+    "FILTER_BY_CLINIC": "Фильтр по клинике",
+    "ALL_CLINICS": "Все клиники",
+    "SPECIALIZATION_PREFIX": "Специализация",
+    "CLINIC_PREFIX": "Клиника",
+    "LOADING": "Загрузка врачей...",
+    "CLINIC_LABEL": "Клиника",
+    "DEPARTMENT_LABEL": "Отделение",
+    "PHONE_LABEL": "Телефон",
+    "BOOK_APPOINTMENT": "Записаться"
+  },
+  "CALENDAR": {
+    "PATIENT_TITLE": "Календарь пациента",
+    "DOCTOR_TITLE": "Календарь врача"
+  },
+  "AI_CHAT": {
+    "TITLE": "AI Медицинский помощник",
+    "NO_PAST_SESSIONS": "Нет прошлых сессий",
+    "WELCOME": "Начните новый разговор с вашим AI медицинским помощником.",
+    "TYPING": "AI печатает...",
+    "INPUT_PLACEHOLDER": "Задайте ваш медицинский вопрос...",
+    "NEW_CHAT": "Новый чат"
+  },
+  
+  "PAGINATOR": {
+    "ITEMS_PER_PAGE": "Элементов на странице:",
+    "NEXT_PAGE": "Следующая страница",
+    "PREVIOUS_PAGE": "Предыдущая страница",
+    "RANGE": "{{start}} - {{end}} из {{length}}"
+  }
 }
+

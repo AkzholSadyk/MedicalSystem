@@ -1,2 +1,26 @@
 .full-width { width: 100%; }
 mat-dialog-content p { margin: 4px 0; }
+/* Profile dialog styles */
+.full-width { width: 100%; }
+.profile-row { display:flex; align-items:center; gap:12px; }
+.profile-details { flex:1; }
+mat-dialog-content p { margin: 6px 0; }
+
+/* Small circular avatar used in dialogs and headers */
+.avatar-img {
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	object-fit: cover;
+	display: inline-block;
+	transition: transform 180ms ease-in-out, box-shadow 180ms ease-in-out;
+	cursor: pointer;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+
+.avatar-img:hover { transform: scale(1.04); box-shadow: 0 4px 12px rgba(0,0,0,0.16); }
+
+.avatar-placeholder { width:56px; height:56px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; background:#f3f3f3; color:#777; }
+
+/* Fullscreen preview overlay handled by AvatarPreviewDialog, but add helpers */
+.preview-image { width:100%; height:100%; object-fit:contain; }

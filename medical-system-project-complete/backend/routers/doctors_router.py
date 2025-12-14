@@ -1,15 +1,23 @@
+import os
+import pathlib
+import uuid
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
-from sqlalchemy import or_
-
+from config import settings
 from database import get_db
 from dependencies import get_current_doctor, require_role
-from models import Doctor, User, DoctorClinic, Clinic
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
+from models import Clinic, Doctor, DoctorClinic, User
 from schemas import DoctorCreate, DoctorRead, DoctorUpdate
+from sqlalchemy import or_
+from sqlalchemy.orm import Session
 
 router = APIRouter()
+
+AVATAR_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "static", "avatars")
+)
+os.makedirs(AVATAR_DIR, exist_ok=True)
 
 
 @router.get("", response_model=List[DoctorRead])
@@ -18,7 +26,9 @@ async def get_doctors(
     limit: int = 100,
     specialization: Optional[str] = Query(None, description="Filter by specialization"),
     clinic: Optional[str] = Query(None, description="Filter by clinic name"),
-    search: Optional[str] = Query(None, description="Search by name, specialization, or clinic"),
+    search: Optional[str] = Query(
+        None, description="Search by name, specialization, or clinic"
+    ),
     db: Session = Depends(get_db),
 ):
     """
@@ -33,8 +43,10 @@ async def get_doctors(
 
     # Filter by clinic name (through DoctorClinic relationship)
     if clinic:
-        query = query.join(DoctorClinic).join(Clinic).filter(
-            Clinic.name.ilike(f"%{clinic}%")
+        query = (
+            query.join(DoctorClinic)
+            .join(Clinic)
+            .filter(Clinic.name.ilike(f"%{clinic}%"))
         )
 
     # General search filter (name, specialization, or clinic)
@@ -44,14 +56,17 @@ async def get_doctors(
         name_filter = or_(
             Doctor.first_name.ilike(search_filter),
             Doctor.last_name.ilike(search_filter),
-            Doctor.specialization.ilike(search_filter)
+            Doctor.specialization.ilike(search_filter),
         )
-        
+
         # Also search in clinics if clinic filter is not already applied
         if not clinic:
-            clinic_subquery = db.query(DoctorClinic.doctor_id).join(Clinic).filter(
-                Clinic.name.ilike(search_filter)
-            ).subquery()
+            clinic_subquery = (
+                db.query(DoctorClinic.doctor_id)
+                .join(Clinic)
+                .filter(Clinic.name.ilike(search_filter))
+                .subquery()
+            )
             query = query.filter(or_(name_filter, Doctor.id.in_(clinic_subquery)))
         else:
             query = query.filter(name_filter)
@@ -61,6 +76,10 @@ async def get_doctors(
             query = query.join(DoctorClinic).join(Clinic)
 
     doctors = query.offset(skip).limit(limit).distinct().all()
+    # normalize avatar urls
+    for d in doctors:
+        if getattr(d, "avatar_url", None) and d.avatar_url.startswith("/"):
+            d.avatar_url = f"{settings.APP_URL}{d.avatar_url}"
     return doctors
 
 
@@ -105,6 +124,8 @@ async def get_doctor(doctor_id: int, db: Session = Depends(get_db)):
             deps.append(dc.department)
     doctor.departments = deps
 
+    if getattr(doctor, "avatar_url", None) and doctor.avatar_url.startswith("/"):
+        doctor.avatar_url = f"{settings.APP_URL}{doctor.avatar_url}"
     return doctor
 
 
@@ -140,6 +161,28 @@ async def update_my_profile(
     for field, value in update_data.items():
         setattr(doctor, field, value)
 
+    db.commit()
+    db.refresh(doctor)
+
+    return doctor
+
+
+@router.post("/me/avatar", response_model=DoctorRead)
+async def upload_my_avatar(
+    file: UploadFile = File(...),
+    doctor: Doctor = Depends(get_current_doctor),
+    db: Session = Depends(get_db),
+):
+    filename = f"doctor_{doctor.id}_{file.filename}"
+    # generate safe filename with uuid
+    ext = pathlib.Path(file.filename).suffix or ""
+    filename = f"doctor_{doctor.id}_{uuid.uuid4().hex}{ext}"
+    filepath = os.path.join(AVATAR_DIR, filename)
+
+    with open(filepath, "wb") as f:
+        f.write(await file.read())
+
+    doctor.avatar_url = f"/static/avatars/{filename}"
     db.commit()
     db.refresh(doctor)
 

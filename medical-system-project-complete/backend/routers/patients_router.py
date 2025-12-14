@@ -1,14 +1,22 @@
+import os
+import pathlib
+import uuid
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
-
 import schemas
+from config import settings
 from database import get_db
 from dependencies import get_current_patient, get_current_user, require_role
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from models import Patient, User
+from sqlalchemy.orm import Session
 
 router = APIRouter()
+
+AVATAR_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "static", "avatars")
+)
+os.makedirs(AVATAR_DIR, exist_ok=True)
 
 
 @router.get("", response_model=List[schemas.PatientRead])
@@ -41,6 +49,9 @@ async def get_my_profile(patient: Patient = Depends(get_current_patient)):
     """
     Get current patient's profile
     """
+    # ensure avatar_url is absolute
+    if getattr(patient, "avatar_url", None) and patient.avatar_url.startswith("/"):
+        patient.avatar_url = f"{settings.APP_URL}{patient.avatar_url}"
     return patient
 
 
@@ -69,6 +80,8 @@ async def get_patient(
             status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found"
         )
 
+    if getattr(patient, "avatar_url", None) and patient.avatar_url.startswith("/"):
+        patient.avatar_url = f"{settings.APP_URL}{patient.avatar_url}"
     return patient
 
 
@@ -126,6 +139,29 @@ async def patch_my_profile(
     for field, value in update_data.items():
         setattr(patient, field, value)
 
+    db.commit()
+    db.refresh(patient)
+
+    return patient
+
+
+@router.post("/me/avatar", response_model=schemas.PatientRead)
+async def upload_my_avatar(
+    file: UploadFile = File(...),
+    patient: Patient = Depends(get_current_patient),
+    db: Session = Depends(get_db),
+):
+    """Upload avatar for current patient"""
+    # Generate a safe filename using UUID and preserve extension
+    ext = pathlib.Path(file.filename).suffix or ""
+    filename = f"patient_{patient.id}_{uuid.uuid4().hex}{ext}"
+    filepath = os.path.join(AVATAR_DIR, filename)
+
+    with open(filepath, "wb") as f:
+        f.write(await file.read())
+
+    # Store relative URL
+    patient.avatar_url = f"/static/avatars/{filename}"
     db.commit()
     db.refresh(patient)
 

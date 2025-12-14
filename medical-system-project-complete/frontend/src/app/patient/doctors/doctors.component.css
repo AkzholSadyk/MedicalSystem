@@ -85,11 +85,13 @@
 
 .doctor-card mat-card-avatar {
   font-size: 40px;
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
+  width: 56px;
+  height: 56px;
+  line-height: 56px;
   color: var(--accent-color);
 }
+
+.doctor-avatar { width:56px; height:56px; border-radius:50%; object-fit:cover; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
 
 .doctor-card mat-card-content p {
   margin: 5px 0;

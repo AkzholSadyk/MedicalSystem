@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { DoctorService } from '../../core/services/doctor.service';
 import { Doctor } from '../../core/models/doctor.model';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog } from '@angular/material/dialog';
+import { AvatarPreviewComponent } from '../../shared/avatar-preview/avatar-preview.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -23,6 +26,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatOptionModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-doctors',
@@ -52,6 +56,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatGridListModule,
     MatOptionModule,
   MatChipsModule,
+  TranslateModule,
   RouterModule
   ]
 })
@@ -67,7 +72,23 @@ export class DoctorsComponent implements OnInit {
   specializations: string[] = [];
   clinics: string[] = [];
 
-  constructor(private doctorService: DoctorService) { }
+  constructor(private doctorService: DoctorService, private matDialog: MatDialog) { }
+
+  openPreview(url?: string) {
+    if (!url) return;
+    const abs = url.startsWith('http') ? url : `${environment.apiUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+    // open dialog
+    (window as any).document && this._openDialog(abs);
+  }
+
+  private _openDialog(url: string) {
+    // lazy access MatDialog via a temporary injection token would be ideal; use window['ngDialog'] fallback
+    try {
+      this.matDialog.open(AvatarPreviewComponent, { data: { url }, panelClass: 'avatar-preview-dialog', maxWidth: '100vw' });
+    } catch (e) {
+      const w = window.open(url, '_blank'); if (w) w.focus();
+    }
+  }
 
   ngOnInit(): void {
     this.loadDoctors();
@@ -86,6 +107,7 @@ export class DoctorsComponent implements OnInit {
           id: d.id,
           user_id: d.user_id,
           first_name: d.first_name,
+          avatar_url: d.avatar_url ? (d.avatar_url.startsWith('http') ? d.avatar_url : `${environment.apiUrl}${d.avatar_url.startsWith('/') ? '' : '/'}${d.avatar_url}`) : undefined,
           last_name: d.last_name,
           full_name: `${d.first_name} ${d.last_name}`.trim(),
           specialization: d.specialization || '',

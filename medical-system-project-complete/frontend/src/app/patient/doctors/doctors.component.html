@@ -1,14 +1,14 @@
 <div class="doctors-container">
-  <h2>Find a Doctor</h2>
+  <h2>{{ 'DOCTORS.TITLE' | translate }}</h2>
 
   <mat-card class="filter-card">
     <div class="search-row">
       <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Search by Name, Specialization, or Clinic</mat-label>
+        <mat-label>{{ 'DOCTORS.SEARCH_LABEL' | translate }}</mat-label>
         <input 
           matInput 
           [(ngModel)]="filterText" 
-          placeholder="e.g., Cardiology, Dr. Smith"
+          placeholder="{{ 'DOCTORS.SEARCH_PLACEHOLDER' | translate }}"
           (keypress)="onSearchKeyPress($event)">
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
@@ -17,15 +17,15 @@
         color="primary" 
         (click)="applyFilters()"
         [disabled]="loading">
-        <mat-icon>search</mat-icon> Search
+        <mat-icon>search</mat-icon> {{ 'COMMON.SEARCH' | translate }}
       </button>
     </div>
     
     <div class="filters-row">
       <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Filter by Specialization</mat-label>
+  <mat-label>{{ 'DOCTORS.FILTER_BY_SPECIALIZATION' | translate }}</mat-label>
         <mat-select [(ngModel)]="filterSpecialization" (selectionChange)="applyFilters()">
-          <mat-option value="">All Specializations</mat-option>
+          <mat-option value="">{{ 'DOCTORS.ALL_SPECIALIZATIONS' | translate }}</mat-option>
           <mat-option *ngFor="let spec of specializations" [value]="spec">
             {{ spec }}
           </mat-option>
@@ -33,9 +33,9 @@
       </mat-form-field>
       
       <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Filter by Clinic</mat-label>
+  <mat-label>{{ 'DOCTORS.FILTER_BY_CLINIC' | translate }}</mat-label>
         <mat-select [(ngModel)]="filterClinic" (selectionChange)="applyFilters()">
-          <mat-option value="">All Clinics</mat-option>
+          <mat-option value="">{{ 'DOCTORS.ALL_CLINICS' | translate }}</mat-option>
           <mat-option *ngFor="let clinic of clinics" [value]="clinic">
             {{ clinic }}
           </mat-option>
@@ -46,47 +46,52 @@
         mat-stroked-button 
         (click)="clearFilters()"
         [disabled]="loading">
-        <mat-icon>clear</mat-icon> Clear Filters
+        <mat-icon>clear</mat-icon> {{ 'COMMON.CLEAR_FILTERS' | translate }}
       </button>
     </div>
     
     <div *ngIf="filterText || filterSpecialization || filterClinic" class="active-filters">
-      <span class="filter-label">Active Filters:</span>
+      <span class="filter-label">{{ 'COMMON.ACTIVE_FILTERS' | translate }}</span>
       <mat-chip *ngIf="filterText" class="filter-chip">
-        Search: {{ filterText }}
+        {{ 'COMMON.SEARCH' | translate }}: {{ filterText }}
         <mat-icon (click)="filterText = ''; applyFilters()" class="chip-close">close</mat-icon>
       </mat-chip>
       <mat-chip *ngIf="filterSpecialization" class="filter-chip">
-        Specialization: {{ filterSpecialization }}
+        {{ 'DOCTORS.SPECIALIZATION_PREFIX' | translate }}: {{ filterSpecialization }}
         <mat-icon (click)="filterSpecialization = ''; applyFilters()" class="chip-close">close</mat-icon>
       </mat-chip>
       <mat-chip *ngIf="filterClinic" class="filter-chip">
-        Clinic: {{ filterClinic }}
+        {{ 'DOCTORS.CLINIC_PREFIX' | translate }}: {{ filterClinic }}
         <mat-icon (click)="filterClinic = ''; applyFilters()" class="chip-close">close</mat-icon>
       </mat-chip>
     </div>
   </mat-card>
 
-  <div *ngIf="loading" class="loading-spinner">
+    <div *ngIf="loading" class="loading-spinner">
     <!-- <mat-spinner></mat-spinner> -->
-    <p>Loading doctors...</p>
+    <p>{{ 'DOCTORS.LOADING' | translate }}</p>
   </div>
 
   <div *ngIf="!loading && doctors.length > 0" class="doctor-list">
     <mat-card *ngFor="let doctor of doctors" class="doctor-card">
       <mat-card-header>
-        <mat-icon mat-card-avatar>person</mat-icon>
-        <mat-card-title>{{ doctor.first_name }} {{ doctor.last_name }}</mat-card-title>
+        <ng-container *ngIf="doctor.avatar_url; else iconAvatar">
+          <img mat-card-avatar [src]="doctor.avatar_url" alt="avatar" class="doctor-avatar" (click)="openPreview(doctor.avatar_url)" />
+        </ng-container>
+        <ng-template #iconAvatar>
+          <mat-icon mat-card-avatar>person</mat-icon>
+        </ng-template>
+  <mat-card-title><a [routerLink]="['/doctors', doctor.id]">{{ doctor.first_name }} {{ doctor.last_name }}</a></mat-card-title>
         <mat-card-subtitle>{{ doctor.specialization }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p><strong>Clinic:</strong> {{ doctor.clinic_name }}</p>
-        <p><strong>Department:</strong> {{ doctor.department_name }}</p>
-        <p><strong>Phone:</strong> {{ doctor.phone_number }}</p>
+  <p><strong>{{ 'DOCTORS.CLINIC_LABEL' | translate }}:</strong> {{ doctor.clinic_name }}</p>
+  <p><strong>{{ 'DOCTORS.DEPARTMENT_LABEL' | translate }}:</strong> {{ doctor.department_name }}</p>
+  <p><strong>{{ 'DOCTORS.PHONE_LABEL' | translate }}:</strong> {{ doctor.phone_number }}</p>
       </mat-card-content>
       <mat-card-actions>
         <button mat-raised-button color="primary" [routerLink]="['/patient/appointments']" [queryParams]="{ doctor_id: doctor.id }">
-          <mat-icon>event</mat-icon> Book Appointment
+          <mat-icon>event</mat-icon> {{ 'DOCTORS.BOOK_APPOINTMENT' | translate }}
         </button>
       </mat-card-actions>
     </mat-card>
@@ -95,7 +100,7 @@
   <div *ngIf="!loading && doctors.length === 0" class="no-results">
     <mat-card>
       <mat-card-content>
-        <p>No doctors found matching your search criteria.</p>
+        <p>{{ 'DOCTORS.NO_RESULTS' | translate }}</p>
       </mat-card-content>
     </mat-card>
   </div>

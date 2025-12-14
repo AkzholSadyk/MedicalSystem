@@ -26,7 +26,7 @@ export interface Appointment {
   duration?: number; // minutes
   // legacy `reason` kept for compatibility, prefer `notes`
   reason?: string;
-  status: 'scheduled' | 'completed' | 'cancelled';
+  status: 'pending' | 'scheduled' | 'completed' | 'cancelled';
   created_at: string;
 }
 
@@ -34,4 +34,6 @@ export interface CreateAppointment {
   doctor_id: number;
   appointment_date: string;
   reason: string;
+  appointment_time?: string; // 'HH:MM'
+  duration?: number;
 }

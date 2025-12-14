@@ -11,7 +11,9 @@ import { CoreModule } from './core.module';
 import { SharedModule } from './shared.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { TranslateMatPaginatorIntl } from './core/i18n/paginator-intl';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -41,6 +43,7 @@ import { Observable } from 'rxjs';
   providers: [
     provideAnimationsAsync(),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  , { provide: MatPaginatorIntl, useClass: TranslateMatPaginatorIntl }
   ],
   bootstrap: [AppComponent]
 })

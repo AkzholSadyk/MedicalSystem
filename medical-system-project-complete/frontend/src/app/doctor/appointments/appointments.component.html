@@ -1,12 +1,12 @@
 <div class="appointments-container">
-  <h2>My Appointments</h2>
+  <h2>{{ 'DOCTOR.MY_APPOINTMENTS' | translate }}</h2>
 
   <mat-card class="table-card">
     <mat-card-header>
-      <mat-card-title>Scheduled Appointments</mat-card-title>
+      <mat-card-title>{{ 'DOCTOR.SCHEDULED_APPOINTMENTS' | translate }}</mat-card-title>
       <mat-form-field appearance="fill" class="filter-field">
-        <mat-label>Filter</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Search appointments" #input>
+        <mat-label>{{ 'COMMON.FILTER' | translate }}</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="{{ 'DOCTOR.SEARCH_APPOINTMENTS' | translate }}" #input>
       </mat-form-field>
     </mat-card-header>
 
@@ -16,36 +16,39 @@
 
           <!-- Patient Name Column -->
           <ng-container matColumnDef="patient_name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Patient </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'COMMON.PATIENT' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{ getPatientDisplayName(element) }} </td>
           </ng-container>
 
           <!-- Date Column -->
           <ng-container matColumnDef="appointment_date">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'COMMON.DATE' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.appointment_date | date:'medium'}} </td>
           </ng-container>
 
           <!-- Reason Column -->
           <ng-container matColumnDef="reason">
-            <th mat-header-cell *matHeaderCellDef> Reason </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.REASON' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.notes || element.reason}} </td>
           </ng-container>
 
           <!-- Status Column -->
           <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'COMMON.STATUS' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.status | titlecase}} </td>
           </ng-container>
 
           <!-- Actions Column -->
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.ACTIONS' | translate }} </th>
             <td mat-cell *matCellDef="let element">
               <button mat-icon-button color="primary" (click)="updateStatus(element.id, 'completed')" [disabled]="element.status !== 'scheduled'">
                 <mat-icon>check_circle</mat-icon>
               </button>
-              <button mat-icon-button color="warn" (click)="updateStatus(element.id, 'cancelled')" [disabled]="element.status !== 'scheduled'">
+              <button mat-icon-button color="accent" *ngIf="element.status === 'pending'" (click)="updateStatus(element.id, 'scheduled')">
+                <mat-icon>schedule</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="updateStatus(element.id, 'cancelled')" [disabled]="element.status === 'cancelled'">
                 <mat-icon>cancel</mat-icon>
               </button>
             </td>
@@ -56,7 +59,7 @@
 
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="5">No appointments matching the filter "{{input.value}}"</td>
+            <td class="mat-cell" colspan="5">{{ 'DOCTOR.NO_APPOINTMENTS_FILTER' | translate:{value: input.value} }}</td>
           </tr>
         </table>
 

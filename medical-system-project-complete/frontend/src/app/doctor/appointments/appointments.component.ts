@@ -62,10 +62,22 @@ export class AppointmentsComponent implements OnInit {
   }
 
   private finalizeDataSource(records: Appointment[]) {
-    this.dataSource = new MatTableDataSource(records);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.loading = false;
+          this.dataSource = new MatTableDataSource(records);
+          this.dataSource.sortingDataAccessor = (item: any, property: string) => {
+            switch (property) {
+              case 'patient_name':
+                return (item.patient_name || (item.patient ? `${item.patient.first_name || ''} ${item.patient.last_name || ''}` : '')).toLowerCase();
+              case 'appointment_date':
+                try { return new Date((item.appointment_date || '') + 'T' + (item.appointment_time || '00:00')).getTime(); } catch (e) { return 0; }
+              case 'status':
+                return (item.status || '').toLowerCase();
+              default:
+                return item[property];
+            }
+          };
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+          this.loading = false;
   }
 
   getPatientDisplayName(a: Appointment): string {
@@ -87,7 +99,7 @@ export class AppointmentsComponent implements OnInit {
     }
   }
 
-  updateStatus(id: number, status: 'completed' | 'cancelled'): void {
+  updateStatus(id: number, status: 'completed' | 'cancelled' | 'scheduled'): void {
     if (confirm(`Are you sure you want to mark this appointment as ${status}?`)) {
       this.appointmentService.updateAppointmentStatus(id, status).subscribe({
         next: () => {

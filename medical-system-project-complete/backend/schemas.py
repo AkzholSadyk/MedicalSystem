@@ -66,6 +66,7 @@ class PatientBase(BaseModel):
     allergies: Optional[str] = None
     emergency_contact: Optional[str] = Field(None, max_length=100)
     emergency_phone: Optional[str] = Field(None, max_length=20)
+    avatar_url: Optional[str] = None
 
 
 class PatientCreate(PatientBase):
@@ -90,6 +91,7 @@ class PatientRead(PatientBase):
     id: int
     user_id: Optional[int] = None
     created_at: datetime
+    avatar_url: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -165,6 +167,7 @@ class DoctorBase(BaseModel):
     education: Optional[str] = None
     bio: Optional[str] = None
     consultation_fee: Optional[Decimal] = Field(None, ge=0)
+    avatar_url: Optional[str] = None
 
 
 class DoctorCreate(DoctorBase):
@@ -192,6 +195,7 @@ class DoctorRead(DoctorBase):
     # Include related clinics and departments for convenience in responses
     clinics: List["ClinicRead"] = []
     departments: List["DepartmentRead"] = []
+    avatar_url: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -210,7 +214,7 @@ class AppointmentBase(BaseModel):
     )
     duration: int = Field(default=30, ge=15, le=180)
     status: str = Field(
-        default="scheduled", pattern="^(scheduled|completed|cancelled|no_show)$"
+        default="scheduled", pattern="^(pending|scheduled|completed|cancelled|no_show)$"
     )
     appointment_type: Optional[str] = Field(None, max_length=50)
     notes: Optional[str] = None
@@ -227,7 +231,7 @@ class AppointmentUpdate(BaseModel):
     )
     duration: Optional[int] = Field(None, ge=15, le=180)
     status: Optional[str] = Field(
-        None, pattern="^(scheduled|completed|cancelled|no_show)$"
+        None, pattern="^(pending|scheduled|completed|cancelled|no_show)$"
     )
     appointment_type: Optional[str] = Field(None, max_length=50)
     notes: Optional[str] = None

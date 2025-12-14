@@ -1,7 +1,18 @@
 <h2 mat-dialog-title>Profile</h2>
 <div mat-dialog-content>
   <div *ngIf="!editing">
-    <p><strong>{{ data?.first_name }} {{ data?.last_name }}</strong></p>
+    <div class="profile-row">
+      <div>
+        <img *ngIf="data?.avatar_url; else placeholder" [src]="absoluteAvatarUrl(data?.avatar_url)" class="avatar-img" alt="avatar" (click)="openPreview(data?.avatar_url)" />
+        <ng-template #placeholder>
+          <div class="avatar-placeholder"><mat-icon>person</mat-icon></div>
+        </ng-template>
+      </div>
+      <div class="profile-details">
+        <p><strong>{{ data?.first_name }} {{ data?.last_name }}</strong></p>
+        <p class="muted">{{ '@' + (data?.username || '') }}</p>
+      </div>
+    </div>
     <p>{{ data?.patronymic }}</p>
     <p>{{ data?.gender }}</p>
     <p>{{ data?.phone }}</p>
@@ -77,5 +88,7 @@
   <button mat-icon-button (click)="toggleEdit()" aria-label="Edit">
     <mat-icon>edit</mat-icon>
   </button>
+  <input type="file" (change)="onFile($event)" accept="image/*" />
+  <button mat-raised-button color="primary" (click)="upload()" [disabled]="!selectedFile">Upload Avatar</button>
   <button mat-raised-button color="primary" (click)="save()" [disabled]="profileForm.invalid || loading" *ngIf="editing">Save</button>
 </div>

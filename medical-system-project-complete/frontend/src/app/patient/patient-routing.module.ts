@@ -7,6 +7,7 @@ import { PatientCalendarComponent } from './patient-calendar.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
 import { RecordsComponent } from './records/records.component';
 import { DoctorsComponent } from './doctors/doctors.component';
+import { PatientProfileComponent } from './patient-profile.component';
 import { AiChatComponent } from './ai-chat/ai-chat.component';
 import { MedicationsComponent } from './medications/medications.component';
 
@@ -26,6 +27,7 @@ const routes: Routes = [
       { path: 'appointments', component: AppointmentsComponent },
       { path: 'records', component: RecordsComponent },
       { path: 'doctors', component: DoctorsComponent },
+  { path: 'profile/:id', component: PatientProfileComponent },
       { path: 'medications', component: MedicationsComponent },
       { path: 'ai-chat', component: AiChatComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }

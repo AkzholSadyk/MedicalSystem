@@ -82,8 +82,10 @@ async def get_upcoming_appointments(
     Get upcoming appointments for current user
     """
     today = date.today()
+    # Show both pending (patient requests) and scheduled (confirmed) appointments
     query = db.query(Appointment).filter(
-        Appointment.appointment_date >= today, Appointment.status == "scheduled"
+        Appointment.appointment_date >= today,
+        Appointment.status.in_(["pending", "scheduled"]),
     )
 
     # Filter based on role
@@ -202,7 +204,10 @@ async def get_calendar_appointments(
     Return appointments in a date range formatted for calendar display.
     Role-filtered: patients see only their appointments; doctors see only their appointments; admins see all.
     """
-    query = db.query(Appointment)
+    # Only include pending requests and confirmed (scheduled) appointments in calendar view
+    query = db.query(Appointment).filter(
+        Appointment.status.in_(["pending", "scheduled"])
+    )
 
     # Role filtering
     if current_user.role == "patient":
@@ -305,7 +310,7 @@ async def create_appointment(
         if not data.get("appointment_time"):
             data["appointment_time"] = appt_dt.strftime("%H:%M")
 
-    # If patient is creating, use their ID
+    # If patient is creating, use their ID and mark appointment as pending for doctor to accept
     if current_user.role == "patient":
         patient = db.query(Patient).filter(Patient.user_id == current_user.id).first()
         if not patient:
@@ -314,6 +319,8 @@ async def create_appointment(
                 detail="Patient profile not found",
             )
         data["patient_id"] = patient.id
+        # set status to pending so doctor can accept
+        data["status"] = "pending"
     else:
         # Verify patient exists when provided by non-patient
         patient = None
@@ -399,7 +406,9 @@ async def update_appointment(
 @router.patch("/{appointment_id}/status", response_model=AppointmentRead)
 async def update_appointment_status(
     appointment_id: int,
-    status: str = Query(..., pattern="^(scheduled|completed|cancelled|no_show)$"),
+    status: str = Query(
+        ..., pattern="^(pending|scheduled|completed|cancelled|no_show)$"
+    ),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -412,6 +421,31 @@ async def update_appointment_status(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Appointment not found"
         )
+
+    # Permission checks: only doctors may move a pending -> scheduled (accept request).
+    if status == "scheduled":
+        # only doctor of this appointment can accept
+        if current_user.role != "doctor":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Only doctors can accept appointments",
+            )
+        doctor = db.query(Doctor).filter(Doctor.user_id == current_user.id).first()
+        if not doctor or appointment.doctor_id != doctor.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Access denied"
+            )
+
+    if status == "cancelled":
+        # patients may cancel their own appointments
+        if current_user.role == "patient":
+            patient = (
+                db.query(Patient).filter(Patient.user_id == current_user.id).first()
+            )
+            if not patient or appointment.patient_id != patient.id:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN, detail="Access denied"
+                )
 
     appointment.status = status
 

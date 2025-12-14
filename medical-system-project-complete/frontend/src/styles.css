@@ -191,3 +191,32 @@ h1,h2,h3,h4,h5,h6, p, span, a, li, label {
 .mat-button, .mat-raised-button, .mat-icon-button {
   color: var(--text-color) !important;
 }
+
+/* FullCalendar event status styling */
+.fc .fc-event .evt-pending, .fc .evt-pending {
+  /* pending/scheduled - yellow background */
+  background-color: #fff59d !important; /* amber lighten-3 */
+  border-color: #fdd835 !important; /* amber 600 */
+  color: #000 !important;
+}
+.fc .fc-event .evt-scheduled, .fc .evt-scheduled {
+  background-color: #fff59d !important;
+  border-color: #fdd835 !important;
+  color: #000 !important;
+}
+.fc .fc-event .evt-completed, .fc .evt-completed {
+  background-color: #c8e6c9 !important; /* green lighten-4 */
+  border-color: #66bb6a !important; /* green 400 */
+  color: #0b6623 !important;
+}
+.fc .fc-event .evt-cancelled, .fc .evt-cancelled {
+  background-color: #ffcdd2 !important; /* red lighten-4 */
+  border-color: #e53935 !important; /* red 600 */
+  color: #610b0b !important;
+}
+
+/* Ensure event text is visible and padding looks good */
+.fc .fc-event, .fc-event {
+  padding: 4px 6px !important;
+  font-weight: 600;
+}
