@@ -135,6 +135,45 @@ export class AuthService {
     );
   }
 
+  // WebAuthn (Passkeys) helpers
+  webauthnRegisterOptions(username: string) {
+    return this.http.get<any>(`${this.apiUrl}/webauthn/register/options`, { params: { username } });
+  }
+
+  webauthnRegisterVerify(username: string, payload: any) {
+    return this.http.post<any>(`${this.apiUrl}/webauthn/register/verify`, payload, { params: { username } });
+  }
+
+  webauthnLoginOptions(username: string) {
+    return this.http.get<any>(`${this.apiUrl}/webauthn/login/options`, { params: { username } });
+  }
+
+  webauthnLoginVerify(username: string, payload: any) {
+    return this.http.post<any>(`${this.apiUrl}/webauthn/login/verify`, payload, { params: { username } });
+  }
+
+  // Simple camera-based face login (demo)
+  faceRegister(username: string, imageBase64: string) {
+    return this.http.post<any>(`${this.apiUrl}/face/register`, { username, image: imageBase64 });
+  }
+
+  faceLogin(username: string, imageBase64: string) {
+    return this.http.post<any>(`${this.apiUrl}/face/login`, { username, image: imageBase64 });
+  }
+
+  /**
+   * PromTech-compatible face verification: upload file as multipart/form-data
+   * Expects FormData with field 'file' (UploadFile) and optional 'check_liveness'
+   */
+  faceVerifyFile(file: File, checkLiveness = true, username?: string | number) {
+    const form = new FormData();
+    form.append('file', file, file.name || 'photo.jpg');
+    if (checkLiveness) form.append('check_liveness', 'true');
+    if (username) form.append('username', String(username));
+    // Do not set Content-Type so browser includes boundary
+    return this.http.post<any>(`${this.apiUrl}/api/faceid/verify`, form);
+  }
+
   logout(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');

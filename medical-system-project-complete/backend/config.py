@@ -39,6 +39,13 @@ class Settings(BaseSettings):
     # Добавлено ✨
     OPENAI_API_KEY: str | None = None
     OPENAI_MODEL: str | None = None
+    # Development-only admin override (username/password)
+    ADMIN_USERNAME: str | None = Field(
+        default_factory=lambda: os.getenv("ADMIN_USERNAME", None)
+    )
+    ADMIN_PASSWORD: str | None = Field(
+        default_factory=lambda: os.getenv("ADMIN_PASSWORD", None)
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env", case_sensitive=True, extra="ignore"

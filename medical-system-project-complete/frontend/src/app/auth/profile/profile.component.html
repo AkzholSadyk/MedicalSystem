@@ -63,7 +63,39 @@
 
   <div *ngIf="error" class="error-message">{{ error }}</div>
 
-  <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid || loading" class="full-width">
-    Save
-  </button>
+  <div class="profile-actions">
+    <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid || loading">
+      Save
+    </button>
+
+    <!-- Prominent add-face button placed in profile form -->
+    <button mat-stroked-button color="accent" type="button" (click)="startFaceRegistration()">
+      Добавить лицо
+    </button>
+  </div>
 </form>
+
+  <div class="webauthn-section">
+    <p>Face ID (optional)</p>
+    <button mat-stroked-button color="accent" (click)="onEnableFaceId()" [disabled]="webauthnLoading">
+      <mat-icon>face</mat-icon>
+      <span *ngIf="!webauthnEnabled">Enable Face ID</span>
+      <span *ngIf="webauthnEnabled">Face ID enabled</span>
+    </button>
+    <div *ngIf="webauthnError" class="error-message">{{ webauthnError }}</div>
+  </div>
+
+  <div class="face-section">
+    <p>Camera Face Login (demo)</p>
+    <button mat-stroked-button color="primary" (click)="startFaceRegistration()">Enable Face Login</button>
+
+    <div *ngIf="showCamera" class="camera-widget">
+  <video id="profileVideo" #video autoplay muted playsinline width="320" height="240"></video>
+      <canvas #canvas width="320" height="240" style="display:none"></canvas>
+      <div>
+        <button mat-raised-button color="accent" (click)="captureFace()">Capture Face</button>
+        <button mat-button (click)="stopCamera()">Cancel</button>
+      </div>
+      <div *ngIf="faceMessage">{{ faceMessage }}</div>
+    </div>
+  </div>

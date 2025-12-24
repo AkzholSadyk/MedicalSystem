@@ -1,11 +1,13 @@
+from config import settings
+from database import engine, get_db
+from dependencies import get_current_user
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
-
-from database import get_db
-from dependencies import get_current_user
 from models import Doctor, Patient, User
 from schemas import Token, UserCreate, UserRead  # Pydantic
+from sqlalchemy import text
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import Session
 from utils.security import create_access_token, get_password_hash, verify_password
 
 router = APIRouter()
@@ -96,7 +98,9 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
         db.commit()
 
     # Create access token
-    access_token = create_access_token(data={"sub": new_user.username})
+    access_token = create_access_token(
+        data={"sub": new_user.username, "is_admin": new_user.role == "admin"}
+    )
 
     return {
         "access_token": access_token,
@@ -112,9 +116,85 @@ async def login(
     """
     Login user and return JWT token
     """
-    # Find user by username
-    user = db.query(User).filter(User.username == form_data.username).first()
+    # Special-case: if ADMIN_USERNAME and ADMIN_PASSWORD set in env, allow direct admin login
+    if settings.ADMIN_USERNAME and settings.ADMIN_PASSWORD:
+        if (
+            form_data.username == settings.ADMIN_USERNAME
+            and form_data.password == settings.ADMIN_PASSWORD
+        ):
+            # ensure admin user exists in DB; create if missing
+            user = (
+                db.query(User).filter(User.username == settings.ADMIN_USERNAME).first()
+            )
+            if not user:
+                hashed = get_password_hash(settings.ADMIN_PASSWORD)
+                user = User(
+                    username=settings.ADMIN_USERNAME,
+                    email=f"{settings.ADMIN_USERNAME}@example.com",
+                    hashed_password=hashed,
+                    role="admin",
+                    is_active=True,
+                )
+                db.add(user)
+                db.commit()
+                db.refresh(user)
+            else:
+                # If existing admin user has an invalid email (e.g. '@local') update it
+                try:
+                    domain = user.email.split("@")[1]
+                except Exception:
+                    domain = ""
+                if user.email.endswith("@local") or "." not in domain:
+                    user.email = f"{user.username}@example.com"
+                    db.add(user)
+                    db.commit()
+                    db.refresh(user)
+        else:
+            user = db.query(User).filter(User.username == form_data.username).first()
+    else:
+        # Find user by username
+        try:
+            user = db.query(User).filter(User.username == form_data.username).first()
+        except OperationalError as oe:
+            # Handle missing WebAuthn columns on older DBs: attempt runtime migration then retry
+            msg = str(oe).lower()
+            if "no such column" in msg and "credential_id" in msg:
+                try:
+                    with engine.connect() as conn:
+                        res = conn.execute(text("PRAGMA table_info(users)")).fetchall()
+                        cols = [r[1] for r in res]
+                        if "credential_id" not in cols:
+                            conn.execute(
+                                text("ALTER TABLE users ADD COLUMN credential_id TEXT")
+                            )
+                        if "public_key" not in cols:
+                            conn.execute(
+                                text("ALTER TABLE users ADD COLUMN public_key TEXT")
+                            )
+                        if "sign_count" not in cols:
+                            conn.execute(
+                                text(
+                                    "ALTER TABLE users ADD COLUMN sign_count INTEGER DEFAULT 0"
+                                )
+                            )
+                        if "webauthn_enabled" not in cols:
+                            conn.execute(
+                                text(
+                                    "ALTER TABLE users ADD COLUMN webauthn_enabled BOOLEAN DEFAULT 0"
+                                )
+                            )
+                except Exception:
+                    # fall through to re-raise original error
+                    raise
 
+                # retry the query once
+                user = (
+                    db.query(User).filter(User.username == form_data.username).first()
+                )
+            else:
+                raise
+
+    # Verify password (for env-admin bypass, user.hashed_password exists and equals env hash)
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -128,7 +208,9 @@ async def login(
         )
 
     # Create access token
-    access_token = create_access_token(data={"sub": user.username})
+    access_token = create_access_token(
+        data={"sub": user.username, "is_admin": user.role == "admin"}
+    )
 
     return {
         "access_token": access_token,

@@ -1,0 +1,231 @@
+@startuml ER_Diagram
+hide circle
+skinparam linetype ortho
+
+' Entities: users
+entity users {
+  * id : integer
+  --
+    username : varchar(20)
+    email : varchar(100)
+    hashed_password : varchar(255)
+    role : varchar(20)
+    is_active : boolean
+    credential_id : varchar(255)
+    webauthn_enabled : boolean
+    face_embedding : text
+    created_at : datetime
+    updated_at : datetime
+}
+
+' patients
+entity patients {
+  * id : integer
+  --
+    user_id : integer FK -> users.id
+    first_name : varchar(100)
+    last_name : varchar(100)
+    patronymic : varchar(100)
+    city : varchar(100)
+    phone : varchar(20)
+    avatar_url : varchar(500)
+    date_of_birth : date
+    address : text
+    blood_type : varchar(5)
+    allergies : text
+    emergency_contact : varchar(100)
+    emergency_phone : varchar(20)
+    created_at : datetime
+}
+
+' doctors
+entity doctors {
+  * id : integer
+  --
+    user_id : integer FK -> users.id
+    first_name : varchar(100)
+    last_name : varchar(100)
+    patronymic : varchar(100)
+    city : varchar(100)
+    specialization : varchar(100)
+    phone : varchar(20)
+    avatar_url : varchar(500)
+    license_number : varchar(50)
+    years_of_experience : integer
+    education : text
+    bio : text
+    consultation_fee : numeric(10,2)
+    created_at : datetime
+}
+
+' clinics
+entity clinics {
+  * id : integer
+  --
+    name : varchar(200)
+    address : text
+    phone : varchar(20)
+    email : varchar(100)
+    working_hours : text
+    description : text
+    created_at : datetime
+}
+
+' departments
+entity departments {
+  * id : integer
+  --
+    name : varchar(100)
+    description : text
+    clinic_id : integer FK -> clinics.id
+    floor : integer
+    phone : varchar(20)
+    created_at : datetime
+}
+
+' doctor_clinics (join table)
+entity doctor_clinics {
+  * id : integer
+  --
+    doctor_id : integer FK -> doctors.id
+    clinic_id : integer FK -> clinics.id
+    department_id : integer FK -> departments.id
+    schedule : text
+    created_at : datetime
+}
+
+' appointments
+entity appointments {
+  * id : integer
+  --
+    patient_id : integer FK -> patients.id
+    doctor_id : integer FK -> doctors.id
+    clinic_id : integer FK -> clinics.id
+    appointment_date : date
+    appointment_time : varchar(10)
+    duration : integer
+    status : varchar(20)
+    appointment_type : varchar(50)
+    notes : text
+    created_at : datetime
+    updated_at : datetime
+}
+
+' medical_records
+entity medical_records {
+  * id : integer
+  --
+    patient_id : integer FK -> patients.id
+    doctor_id : integer FK -> doctors.id
+    appointment_id : integer FK -> appointments.id
+    diagnosis : text
+    symptoms : text
+    treatment : text
+    prescriptions : text
+    test_results : text
+    lab_results : text
+    notes : text
+    record_date : date
+    created_at : datetime
+    updated_at : datetime
+}
+
+' AI chat
+entity ai_chat_sessions {
+  * id : integer
+  --
+    session_id : varchar(64)
+    user_id : integer FK -> users.id
+    title : varchar(200)
+    started_at : datetime
+    last_message_at : datetime
+    is_active : boolean
+}
+
+entity ai_chat_messages {
+  * id : integer
+  --
+    user_id : integer FK -> users.id
+    session_id : integer FK -> ai_chat_sessions.id
+    role : varchar(20)
+    content : text
+    model : varchar(50)
+    tokens_used : integer
+    created_at : datetime
+}
+
+' Chat sessions/messages
+entity chat_sessions {
+  * id : integer
+  --
+    patient_id : integer FK -> patients.id
+    doctor_id : integer FK -> doctors.id
+    created_at : datetime
+    last_message_at : datetime
+    is_active : boolean
+}
+
+entity chat_messages {
+  * id : integer
+  --
+    session_id : integer FK -> chat_sessions.id
+    sender_id : integer FK -> users.id
+    content : text
+    created_at : datetime
+}
+
+' medications
+entity medications {
+  * id : integer
+  --
+    name : varchar(200)
+    generic_name : varchar(200)
+    description : text
+    form : varchar(100)
+    image_url : varchar(500)
+    created_at : datetime
+}
+
+' Relationships (crow's foot style)
+users ||--o{ patients : "1-to-1 (optional)"
+users ||--o{ doctors : "1-to-1 (optional)"
+users ||--o{ ai_chat_sessions : "1-to-many"
+users ||--o{ ai_chat_messages : "1-to-many"
+
+patients ||--o{ medical_records : "1-to-many"
+patients ||--o{ appointments : "1-to-many"
+patients ||--o{ chat_sessions : "1-to-many"
+
+doctors ||--o{ appointments : "1-to-many"
+doctors ||--o{ medical_records : "1-to-many"
+doctors ||--o{ doctor_clinics : "1-to-many"
+doctors ||--o{ chat_sessions : "1-to-many"
+
+clinics ||--o{ departments : "1-to-many"
+clinics ||--o{ doctor_clinics : "1-to-many"
+clinics ||--o{ appointments : "1-to-many"
+
+departments ||--o{ doctor_clinics : "1-to-many"
+
+doctor_clinics }o--|| doctors : "many-to-1"
+doctor_clinics }o--|| clinics : "many-to-1"
+doctor_clinics }o--|| departments : "many-to-0..1"
+
+appointments }o--|| patients : "many-to-1"
+appointments }o--|| doctors : "many-to-1"
+appointments }o--|| clinics : "many-to-0..1"
+
+medical_records }o--|| patients : "many-to-1"
+medical_records }o--|| doctors : "many-to-1"
+medical_records }o--|| appointments : "many-to-0..1"
+
+ai_chat_sessions }o--|| users : "many-to-1"
+ai_chat_messages }o--|| users : "many-to-1"
+ai_chat_messages }o--|| ai_chat_sessions : "many-to-1"
+
+chat_sessions }o--|| patients : "many-to-1"
+chat_sessions }o--|| doctors : "many-to-1"
+chat_messages }o--|| chat_sessions : "many-to-1"
+chat_messages }o--|| users : "many-to-1"
+
+@enduml

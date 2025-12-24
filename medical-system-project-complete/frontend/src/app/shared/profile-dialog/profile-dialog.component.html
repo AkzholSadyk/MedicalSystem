@@ -91,4 +91,17 @@
   <input type="file" (change)="onFile($event)" accept="image/*" />
   <button mat-raised-button color="primary" (click)="upload()" [disabled]="!selectedFile">Upload Avatar</button>
   <button mat-raised-button color="primary" (click)="save()" [disabled]="profileForm.invalid || loading" *ngIf="editing">Save</button>
+  <!-- Add face button for camera-based face login demo -->
+  <button mat-stroked-button color="accent" type="button" (click)="startFaceRegistration()">Добавить лицо</button>
+</div>
+
+<!-- Camera widget for dialog face capture -->
+<div *ngIf="showCameraDialog" class="camera-widget">
+  <video id="dialogVideo" autoplay muted playsinline width="320" height="240"></video>
+  <canvas id="dialogCanvas" width="320" height="240" style="display:none"></canvas>
+  <div>
+    <button mat-raised-button color="accent" (click)="captureFaceDialog()">Capture Face</button>
+    <button mat-button (click)="stopCameraDialog()">Cancel</button>
+  </div>
+  <div *ngIf="dialogFaceMessage">{{ dialogFaceMessage }}</div>
 </div>

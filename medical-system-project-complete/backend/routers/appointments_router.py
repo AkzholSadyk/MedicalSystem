@@ -118,6 +118,13 @@ async def create_appointment_patient(
     """
     Alias for creating appointment by patient (keeps same logic as create_appointment)
     """
+    # Require the caller to be a patient for this alias endpoint.
+    if current_user.role != "patient":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only patients can create appointments via this endpoint",
+        )
+
     return await create_appointment(appointment_data, current_user, db)
 
 

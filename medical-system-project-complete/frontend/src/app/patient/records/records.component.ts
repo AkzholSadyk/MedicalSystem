@@ -19,6 +19,7 @@ export class RecordsComponent implements OnInit {
   dataSource!: MatTableDataSource<MedicalRecord>;
   loading = true;
   selectedRecord: MedicalRecord | null = null;
+  // No static title — templates use translate pipe so labels update automatically
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -27,6 +28,7 @@ export class RecordsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadRecords();
+  // Titles and labels are handled in the template via the translate pipe so they react to language changes.
   }
 
   loadRecords(): void {

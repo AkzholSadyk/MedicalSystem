@@ -12,7 +12,7 @@ class UserBase(BaseModel):
     last_name: str
 
     email: EmailStr
-    role: str = Field(..., pattern="^(patient|doctor|admin)$")
+    role: str = Field(..., pattern="^(patient|doctor|admin|pharmacist)$")
 
 
 class UserCreate(UserBase):
@@ -28,6 +28,28 @@ class UserUpdate(BaseModel):
     username: Optional[str] = Field(None, min_length=3, max_length=50)
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = None
+
+
+class AdminUserUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    # Admin may assign pharmacist role as well
+    role: Optional[str] = Field(None, pattern="^(patient|doctor|pharmacist)$")
+    is_active: Optional[bool] = None
+
+
+class AdminUserRead(BaseModel):
+    id: int
+    role: str
+    full_name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    created_at: datetime
+    status: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserRead(UserBase):
@@ -469,11 +491,14 @@ class MedicationBase(BaseModel):
     description: Optional[str] = None
     form: Optional[str] = Field(None, max_length=100)
     image_url: Optional[str] = Field(None, max_length=500)
+    stored_image: Optional[str] = Field(None, max_length=500)
 
 
 class MedicationCreate(MedicationBase):
     """Schema for creating a medication record"""
 
+    # Note: image upload handled via multipart/form-data in router (UploadFile)
+    created_by: Optional[int] = None
     pass
 
 
@@ -491,6 +516,7 @@ class MedicationRead(MedicationBase):
     """Schema for reading medication data"""
 
     id: int
+    created_by: Optional[int] = None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

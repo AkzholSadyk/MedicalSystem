@@ -70,9 +70,12 @@
     "RANGE": "{{start}} - {{end}} of {{length}}"
   },
   "DOCTOR": {
-    "PATIENT_LIST": "Patient List",
-    "SEARCH_PATIENTS": "Search patients",
-    "NO_PATIENTS_FILTER": "No patients matching the filter \"{{value}}\""
+  "PATIENT_LIST": "Patient List",
+  "SEARCH_PATIENTS": "Search patients",
+  "NO_PATIENTS_FILTER": "No patients matching the filter \"{{value}}\"",
+  "MY_APPOINTMENTS": "My Appointments",
+  "SCHEDULED_APPOINTMENTS": "Scheduled Appointments",
+  "MEDICAL_RECORDS_TITLE": "Medical Records"
   }
   ,
   "PATIENT": {
@@ -88,18 +91,16 @@
     "ERROR_DOCTOR_REQUIRED": "Doctor is required",
     "ERROR_DATE_REQUIRED": "Date is required",
     "ERROR_TIME_REQUIRED": "Time is required",
-    "ERROR_REASON_REQUIRED": "Reason is required"
-  }
- ,
-  "MY_MEDICAL_RECORDS": "My Medical Records",
-  "RECORD_HISTORY": "Record History",
-  "SEARCH_RECORDS": "Search records",
-  "NO_RECORDS_FILTER": "No medical records matching the filter \"{{value}}\"",
-  "RECORD_DETAILS": "Record Details",
-  "DIAGNOSIS": "Diagnosis",
-  "TREATMENT": "Treatment",
-  "NOTES": "Notes"
-  ,
+    "ERROR_REASON_REQUIRED": "Reason is required",
+    "MY_MEDICAL_RECORDS": "My Medical Records",
+    "RECORD_HISTORY": "Record History",
+    "SEARCH_RECORDS": "Search records",
+    "NO_RECORDS_FILTER": "No medical records matching the filter \"{{value}}\"",
+    "RECORD_DETAILS": "Record Details",
+    "DIAGNOSIS": "Diagnosis",
+    "TREATMENT": "Treatment",
+    "NOTES": "Notes"
+  },
   "RECORDS": {
     "RECORD_HISTORY_FOR": "Record History for {{name}}",
     "SELECT_PATIENT": "Select Patient",
@@ -138,7 +139,7 @@
     "NO_DESCRIPTION": "No description available",
     "NO_RESULTS": "No medications found matching \"{{value}}\"",
     "TRY_EXAMPLES": "Try searching with a different medication name (e.g., Aspirin, Ibuprofen, Paracetamol)",
-    "FIRST_SEARCH_NOTE": "Note: If this is your first search, the system may take a moment to fetch data from openFDA API.",
+  "FIRST_SEARCH_NOTE": "Note: The market shows medications added by pharmacists. If it appears empty, ask a pharmacist to add items.",
     "SEARCH_PROMPT": "Search for medications to view information",
     "SEARCH_HINT": "Enter a medication name in the search box above",
     "FORM_PREFIX": "Form",
@@ -162,6 +163,8 @@
     "NO_RESULTS": "No doctors found matching your search criteria."
   }
   ,
+  "MY_PATIENTS": "My Patients",
+  "PATIENT_LIST": "Patient List",
   "CALENDAR": {
     "PATIENT_TITLE": "Patient Calendar",
     "DOCTOR_TITLE": "Doctor Calendar"

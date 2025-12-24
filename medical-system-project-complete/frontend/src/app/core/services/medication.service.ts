@@ -51,5 +51,31 @@ export class MedicationService {
   getMedicationById(id: number): Observable<Medication> {
     return this.http.get<Medication>(`${this.apiUrl}/${id}`);
   }
+
+  createMedication(payload: { name: string; description?: string; form?: string; generic_name?: string; image?: File | null }): Observable<Medication> {
+    const form = new FormData();
+    form.append('name', payload.name);
+    if (payload.description) form.append('description', payload.description);
+    if (payload.form) form.append('form', payload.form);
+    if (payload.generic_name) form.append('generic_name', payload.generic_name);
+    if (payload.image) form.append('image', payload.image, payload.image.name);
+
+    return this.http.post<Medication>(this.apiUrl, form);
+  }
+
+  updateMedication(id: number, payload: { name?: string; description?: string; form?: string; generic_name?: string; image?: File | null }): Observable<Medication> {
+    const form = new FormData();
+    if (payload.name) form.append('name', payload.name);
+    if (payload.description) form.append('description', payload.description);
+    if (payload.form) form.append('form', payload.form);
+    if (payload.generic_name) form.append('generic_name', payload.generic_name);
+    if (payload.image) form.append('image', payload.image, payload.image.name);
+
+    return this.http.put<Medication>(`${this.apiUrl}/${id}`, form);
+  }
+
+  deleteMedication(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
 

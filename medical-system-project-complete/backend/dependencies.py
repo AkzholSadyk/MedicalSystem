@@ -1,12 +1,11 @@
 from typing import List
 
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
-
 import models
 from database import get_db
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from models import User
+from sqlalchemy.orm import Session
 from utils.security import decode_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
@@ -122,6 +121,38 @@ async def get_current_doctor(
         )
 
     return doctor
+
+
+async def get_current_pharmacist(
+    current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)
+) -> models.User:
+    """
+    Ensure the current user is a pharmacist and return the user record.
+    """
+    if current_user.role != "pharmacist":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only pharmacists can access this resource",
+        )
+
+    # Pharmacist specific profile table is not implemented; return user
+    return current_user
+
+
+async def get_current_admin(
+    current_user: models.User = Depends(get_current_user),
+) -> models.User:
+    """
+    Ensure the current user is an admin. Raise 403 for non-admins.
+    """
+    # First check token-level claim (if present) then fallback to role field
+    # decode_token already ran in get_current_user, so check role
+    if getattr(current_user, "role", None) != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Admin privileges required"
+        )
+
+    return current_user
 
 
 import traceback

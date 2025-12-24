@@ -23,12 +23,21 @@ class User(Base):
     username = Column(String(20), unique=True, index=True, nullable=False)
     email = Column(String(100), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
-    role = Column(String(20), nullable=False)  # patient, doctor, admin
+    role = Column(String(20), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
+
+    # WebAuthn (Passkey) fields
+    credential_id = Column(String(255), unique=True, index=True, nullable=True)
+    public_key = Column(Text, nullable=True)
+    sign_count = Column(Integer, default=0)
+    webauthn_enabled = Column(Boolean, default=False, nullable=False)
+
+    # Simple face login embedding (stored as JSON stringified list)
+    face_embedding = Column(Text, nullable=True)
 
     # Relationships
     patient = relationship(
@@ -43,6 +52,11 @@ class User(Base):
     ai_chat_messages = relationship(
         "AIChatMessage", back_populates="user", cascade="all, delete-orphan"
     )
+
+
+# Note: Pharmacist is represented by a User with role='pharmacist'.
+# No separate Pharmacist table is required for now; pharmacists will create
+# Medication records which reference the creating user's id.
 
 
 class Patient(Base):
@@ -348,6 +362,12 @@ class Medication(Base):
     description = Column(Text)  # Medication description/summary
     form = Column(String(100))  # e.g., "tablet", "capsule", "syrup"
     image_url = Column(String(500))  # External image URL (not stored locally)
+    # If uploaded via the app, store relative path under /static/uploads/
+    stored_image = Column(String(500))
+    # Reference to creating user (pharmacist or admin)
+    created_by = Column(
+        Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 

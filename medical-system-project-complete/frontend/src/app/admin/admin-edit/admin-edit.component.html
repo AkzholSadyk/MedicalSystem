@@ -1,0 +1,34 @@
+<div class="admin-edit" *ngIf="user">
+  <h2>Edit User</h2>
+  <form (ngSubmit)="save()">
+    <mat-form-field style="width:100%">
+      <mat-label>Full name</mat-label>
+      <input matInput [(ngModel)]="user.full_name" name="full_name" />
+    </mat-form-field>
+
+    <mat-form-field style="width:100%">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="user.email" name="email" />
+    </mat-form-field>
+
+    <mat-form-field style="width:100%">
+      <mat-label>Phone</mat-label>
+      <input matInput [(ngModel)]="user.phone" name="phone" />
+    </mat-form-field>
+
+    <mat-form-field style="width:100%">
+      <mat-label>Role</mat-label>
+      <mat-select [(ngModel)]="user.role" name="role">
+        <mat-option value="patient">Patient</mat-option>
+        <mat-option value="doctor">Doctor</mat-option>
+        <mat-option value="admin">Admin</mat-option>
+        <mat-option value="pharmacist">Pharmacist</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="actions">
+      <button mat-button type="submit">Save</button>
+      <button mat-button type="button" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
+</div>

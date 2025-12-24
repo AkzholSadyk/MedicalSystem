@@ -5,6 +5,7 @@ export interface Medication {
   description?: string;
   form?: string;
   image_url?: string;
+  stored_image?: string;
   created_at: string;
 }
 

@@ -1,0 +1,18 @@
+<mat-card>
+  <mat-card-title>Pharmacist Dashboard</mat-card-title>
+  <mat-card-content>
+    <p>Manage medications you have added.</p>
+    <button mat-raised-button color="primary" routerLink="/pharmacist/new">Add Medication</button>
+
+    <mat-list *ngIf="!loading">
+      <mat-list-item *ngFor="let med of medications">
+        <div matLine>{{ med.name }} <small *ngIf="med.generic_name">({{ med.generic_name }})</small></div>
+        <div matLine>{{ med.form }}</div>
+        <button mat-icon-button color="warn" (click)="deleteMed(med.id)"><mat-icon>delete</mat-icon></button>
+        <button mat-icon-button color="accent" [routerLink]="['/pharmacist/edit', med.id]"><mat-icon>edit</mat-icon></button>
+      </mat-list-item>
+    </mat-list>
+
+    <p *ngIf="loading">Loading...</p>
+  </mat-card-content>
+</mat-card>

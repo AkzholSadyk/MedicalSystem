@@ -20,6 +20,26 @@
 
   <mat-divider></mat-divider>
 
+  <div class="webauthn-login">
+    <button mat-icon-button aria-label="Face ID login" (click)="onFaceIdLogin()" title="Login with Face ID">
+      <mat-icon>face</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="showLoginCamera" class="camera-widget">
+    <div style="position:relative; width:320px; height:240px;">
+      <video id="loginVideo" autoplay muted playsinline width="320" height="240" style="display:block; position:absolute; left:0; top:0;"></video>
+      <!-- overlay canvas for face box/landmarks -->
+      <canvas id="loginOverlay" width="320" height="240" style="position:absolute; left:0; top:0; pointer-events:none"></canvas>
+    </div>
+    <canvas id="loginCanvas" width="320" height="240" style="display:none"></canvas>
+    <div>
+      <button mat-raised-button color="accent" (click)="captureFaceLogin()">Capture Face</button>
+      <button mat-button (click)="stopLoginCamera()">Cancel</button>
+    </div>
+    <div *ngIf="loginFaceMessage">{{ loginFaceMessage }}</div>
+  </div>
+
   <button mat-button color="accent" routerLink="/auth/register" class="full-width">
     Don't have an account? Register
   </button>

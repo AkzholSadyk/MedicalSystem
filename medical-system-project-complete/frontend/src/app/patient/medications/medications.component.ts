@@ -140,10 +140,18 @@ export class MedicationsComponent implements OnInit {
 
   
   getImageUrl(medication: Medication): string {
+    // Prefer locally stored image when available
+    if (medication.stored_image) {
+      // stored_image may be like '/static/uploads/filename'
+      if (medication.stored_image.startsWith('http')) return medication.stored_image;
+      const base = (window as any).__env?.apiUrl || 'http://localhost:8000';
+      return `${base}${medication.stored_image.startsWith('/') ? '' : '/'}${medication.stored_image}`;
+    }
+
     if (medication.image_url && !medication.image_url.includes('google.com/search')) {
       return medication.image_url;
     }
-    
+
     return '/assets/med-placeholder.svg';
   }
 

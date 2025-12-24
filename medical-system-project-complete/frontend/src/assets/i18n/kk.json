@@ -56,9 +56,12 @@
   "ACTIVE_FILTERS": "Белсенді сүзгілер"
   },
   "DOCTOR": {
-    "PATIENT_LIST": "Пациенттер тізімі",
-    "SEARCH_PATIENTS": "Пациенттерді іздеу",
-    "NO_PATIENTS_FILTER": "Фильтрге сәйкес келетін пациенттер жоқ \"{{value}}\""
+  "PATIENT_LIST": "Пациенттер тізімі",
+  "SEARCH_PATIENTS": "Пациенттерді іздеу",
+  "NO_PATIENTS_FILTER": "Фильтрге сәйкес келетін пациенттер жоқ \"{{value}}\",",
+  "MY_APPOINTMENTS": "Менің жазылымдарым",
+  "SCHEDULED_APPOINTMENTS": "Жоспарланған жазылымдар",
+  "MEDICAL_RECORDS_TITLE": "Медициналық жазбалар"
   }
 
   ,
@@ -75,18 +78,17 @@
     "ERROR_DOCTOR_REQUIRED": "Дәрігер міндетті",
     "ERROR_DATE_REQUIRED": "Күні міндетті",
     "ERROR_TIME_REQUIRED": "Уақыт міндетті",
-    "ERROR_REASON_REQUIRED": "Себеп міндетті"
-  }
- ,
-  "MY_MEDICAL_RECORDS": "Менің медициналық жазбаларым",
-  "RECORD_HISTORY": "Жазбалар тарихы",
-  "SEARCH_RECORDS": "Жазбаларды іздеу",
-  "NO_RECORDS_FILTER": "Фильтрге сәйкес келетін медициналық жазбалар жоқ \"{{value}}\"",
-  "RECORD_DETAILS": "Жазба туралы мәлімет",
-  "DIAGNOSIS": "Диагноз",
-  "TREATMENT": "Емдеу",
-  "NOTES": "Ескертпелер"
-  ,
+    "ERROR_REASON_REQUIRED": "Себеп міндетті",
+    "MY_MEDICAL_RECORDS": "Менің медициналық жазбаларым",
+    "RECORD_HISTORY": "Жазбалар тарихы",
+    "SEARCH_RECORDS": "Жазбаларды іздеу",
+    "NO_RECORDS_FILTER": "Фильтрге сәйкес келетін медициналық жазбалар жоқ \"{{value}}\"",
+    "RECORD_DETAILS": "Жазба туралы мәлімет",
+    "DIAGNOSIS": "Диагноз",
+    "TREATMENT": "Емдеу",
+    "NOTES": "Ескертпелер"
+  },
+  
   "RECORDS": {
     "RECORD_HISTORY_FOR": "{{name}} үшін жазбалар тарихы"
   }
@@ -113,7 +115,7 @@
     "NO_DESCRIPTION": "Сипаттама жоқ",
     "NO_RESULTS": "\"{{value}}\" бойынша дәрілер табылмады",
     "TRY_EXAMPLES": "Басқа дәрі атауын іздеуді қолданып көріңіз (мысалы, Аспирин, Ибупрофен, Парацетамол)",
-    "FIRST_SEARCH_NOTE": "Ескерту: егер бұл бірінші іздеу болса, жүйеге openFDA API-дан деректер алу үшін біраз уақыт қажет болуы мүмкін.",
+    "FIRST_SEARCH_NOTE": "Ескерту: нарықта фармацевтер қосқан дәрілер көрсетіледі. Егер ол бос болса, фармацевтен сұраңыз.",
     "SEARCH_PROMPT": "Ақпаратты көру үшін дәрілерді іздеңіз",
     "SEARCH_HINT": "Жоғарыдағы іздеу өрісіне дәрі атауын енгізіңіз",
     "FORM_PREFIX": "Форма",
@@ -137,6 +139,8 @@
   },
   "CALENDAR": {
     "PATIENT_TITLE": "Пациент күнтізбесі",
+  "MY_PATIENTS": "Менің науқастарым",
+  "PATIENT_LIST": "Пациенттер тізімі",
     "DOCTOR_TITLE": "Дәрігер күнтізбесі"
   },
   "AI_CHAT": {

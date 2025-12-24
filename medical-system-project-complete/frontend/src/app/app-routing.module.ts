@@ -23,9 +23,13 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    canActivate: [authGuard, roleGuard],
-    data: { role: 'admin' },
     loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
+  },
+  {
+    path: 'pharmacist',
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'pharmacist' },
+    loadChildren: () => import('./pharmacist/pharmacist.module').then(m => m.PharmacistRoutingModule)
   },
   {
     path: '',
@@ -37,7 +41,6 @@ const routes: Routes = [
   { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
   { path: 'patient', loadChildren: () => import('./patient/patient.module').then(m => m.PatientModule) },
   { path: 'doctor', loadChildren: () => import('./doctor/doctor.module').then(m => m.DoctorModule) },
-  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
   {
     path: '**',
     redirectTo: 'auth/login'

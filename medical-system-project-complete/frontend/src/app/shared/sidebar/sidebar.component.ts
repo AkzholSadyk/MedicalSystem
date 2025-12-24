@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -35,6 +35,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     { nameKey: 'SIDEBAR.ADMIN.CLINICS', icon: 'local_hospital', route: '/admin/clinics' },
   ];
 
+  pharmacistMenu = [
+    { nameKey: 'SIDEBAR.PHARMACIST.DASHBOARD', icon: 'inventory_2', route: '/pharmacist' }
+  ];
+
   get menuItems() {
     switch (this.role) {
       case 'patient':
@@ -43,17 +47,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
         return this.doctorMenu;
       case 'admin':
         return this.adminMenu;
+      case 'pharmacist':
+        return this.pharmacistMenu;
       default:
         return [];
     }
   }
 
-  constructor(public authService: AuthService, private translate: TranslateService) {}
+  constructor(public authService: AuthService, private translate: TranslateService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     // Подписываемся на изменения языка для обновления меню
     this.langChangeSubscription = this.translate.onLangChange.subscribe(() => {
-      // Принудительно обновляем компонент при смене языка
+      // Force Angular to check this component so translated labels update immediately
+      try { this.cdr.detectChanges(); } catch (e) { /* noop */ }
     });
   }
 

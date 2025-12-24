@@ -220,3 +220,18 @@ h1,h2,h3,h4,h5,h6, p, span, a, li, label {
   padding: 4px 6px !important;
   font-weight: 600;
 }
+
+/* Strong override: make header/navbar text and icons white in light mode */
+.light_mode .mat-toolbar {
+  background: var(--toolbar-color) !important;
+}
+.light_mode .mat-toolbar, .light_mode .mat-toolbar * {
+  color: #ffffff !important;
+}
+.light_mode .mat-toolbar .mat-form-field, .light_mode .mat-toolbar .mat-select, .light_mode .mat-toolbar .lang-select {
+  color: #ffffff !important;
+}
+.light_mode .mat-toolbar .mat-icon {
+  color: #ffffff !important;
+}
+
